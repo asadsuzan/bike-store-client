@@ -14,9 +14,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const onSubmit = async (data: FieldValues) => {
-    const toastId = toast.loading("Please wait...", {
-      duration: 2000,
-    });
+    const toastId = toast.loading("Please wait...", {});
 
     try {
       const res = await login(data).unwrap();

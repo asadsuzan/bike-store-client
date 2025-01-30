@@ -10,17 +10,27 @@ import { persistor, store } from "./redux/store.ts";
 import Login from "./pages/Login.tsx";
 import { PersistGate } from "redux-persist/integration/react";
 import { Toaster } from "sonner";
+import OpenLayout from "./components/layout/OpenLayout.tsx";
+import AuthLayout from "./components/layout/AuthenticateLayout.tsx";
+import Shop from "./pages/Shop.tsx";
+import About from "./pages/About.tsx";
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<App />} />
-            <Route path="/orders" element={<Order />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/login" element={<Login />} />
-            {/* Add more routes as needed */}
+            <Route element={<OpenLayout />}>
+              <Route index element={<App />} />
+              <Route path="cart" element={<Cart />} />
+              <Route path="login" element={<Login />} />
+              <Route path="shop" element={<Shop />} />
+              <Route path="about" element={<About />} />
+            </Route>
+            <Route element={<AuthLayout />}>
+              <Route path="orders" element={<Order />} />
+            </Route>
           </Routes>
         </BrowserRouter>
         <Toaster />
