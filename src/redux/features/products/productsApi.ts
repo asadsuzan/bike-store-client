@@ -1,33 +1,3 @@
-// import { baseApi } from "../../api/baseApi";
-
-// const productsApi = baseApi.injectEndpoints({
-//   endpoints: (builder) => ({
-//     getProducts: builder.query({
-//       query: () => ({
-//         url: "/products",
-//         method: "GET",
-//       }),
-//     }),
-//   }),
-// });
-
-// export const { useGetProductsQuery } = productsApi;
-
-// import { baseApi } from "../../api/baseApi";
-
-// const productsApi = baseApi.injectEndpoints({
-//   endpoints: (builder) => ({
-//     getProducts: builder.query({
-//       query: ({ page = 1, limit = 5 }) => ({
-//         url: `/products?page=${page}&limit=${limit}`,
-//         method: "GET",
-//       }),
-//     }),
-//   }),
-// });
-
-// export const { useGetProductsQuery } = productsApi;
-
 import { baseApi } from "../../api/baseApi";
 
 const productsApi = baseApi.injectEndpoints({

@@ -19,17 +19,18 @@ const Shop = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
-  const limit = 5;
+  const [inputPage, setInputPage] = useState<string>("");
 
-  // Debounce search input for better performance
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
-      setCurrentPage(1); // Reset to page 1 when searching
+      setCurrentPage(1);
     }, 300);
     return () => clearTimeout(handler);
   }, [searchTerm]);
-  // Fetch products with current page and limit
+
+  const limit = 5;
+
   const { isLoading, data } = useGetProductsQuery(
     { page: currentPage, limit, search: debouncedSearchTerm },
     {
@@ -43,20 +44,30 @@ const Shop = () => {
   const { totalPages } = data?.meta || {};
 
   const handlePrevious = () => {
-    if (currentPage > 1) {
-      setCurrentPage((prev) => prev - 1);
-    }
+    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
   };
 
   const handleNext = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage((prev) => prev + 1);
+    if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
+  };
+
+  const handleJumpToPage = () => {
+    const pageNumber = parseInt(inputPage, 10);
+    if (!isNaN(pageNumber) && pageNumber > 0 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    } else {
+      alert(`Please enter a valid page number between 1 and ${totalPages}`);
     }
+  };
+
+  const handleDropdownChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setCurrentPage(parseInt(event.target.value, 10));
   };
 
   return (
     <div>
-      {/* Search Bar */}
       {/* Search Bar */}
       <input
         type="text"
@@ -111,6 +122,37 @@ const Shop = () => {
         >
           Next
         </button>
+
+        {/* Combined Input and Dropdown */}
+        <div className="ml-4 flex items-center gap-2">
+          <select
+            value={currentPage}
+            onChange={handleDropdownChange}
+            className="border px-2 py-1 rounded"
+          >
+            {Array.from({ length: totalPages }, (_, index) => (
+              <option key={index + 1} value={index + 1}>
+                Page {index + 1}
+              </option>
+            ))}
+          </select>
+
+          <input
+            type="number"
+            min="1"
+            max={totalPages}
+            value={inputPage}
+            onChange={(e) => setInputPage(e.target.value)}
+            placeholder="Page"
+            className="w-16 px-2 py-1 border rounded"
+          />
+          <button
+            onClick={handleJumpToPage}
+            className="px-4 py-2 bg-blue-500 text-white rounded"
+          >
+            Go
+          </button>
+        </div>
       </div>
     </div>
   );
