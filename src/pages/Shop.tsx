@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useGetProductsQuery } from "../redux/features/products/productsApi";
+// import a close icon from lucide react
+import { CircleX } from "lucide-react";
 
 export interface IProduct {
   _id: string;
@@ -66,16 +68,32 @@ const Shop = () => {
     setCurrentPage(parseInt(event.target.value, 10));
   };
 
+  const clearSearch = () => {
+    setSearchTerm("");
+    setDebouncedSearchTerm("");
+    setCurrentPage(1);
+  };
+
   return (
     <div>
       {/* Search Bar */}
-      <input
-        type="text"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        placeholder="Search by product name"
-        className="w-full px-4 py-2 rounded mb-4"
-      />
+      <div className="relative mb-4">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search by product name"
+          className="w-full px-4 py-2 rounded border pr-10" // Added right padding for icon
+        />
+        {searchTerm && (
+          <span
+            onClick={clearSearch}
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
+          >
+            <CircleX size={20} />
+          </span>
+        )}
+      </div>
 
       {/* Product Grid */}
       <div className="grid grid-cols-4 gap-4">
