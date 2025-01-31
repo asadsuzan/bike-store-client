@@ -6,11 +6,13 @@ import {
   removeFromCart,
   updateQuantity,
 } from "../redux/features/cart/cartSlice";
+import { useNavigate } from "react-router";
 // import { Dialog } from "@/components/ui/dialog";
 
 const CartPage = () => {
   const [couponCode, setCouponCode] = useState("");
   const [isFocused, setIsFocused] = useState(false);
+  const navigate = useNavigate();
   const [pickupAddress, setPickupAddress] = useState(
     "3961 East Bayshore Road (Entrance faces our parking lot, off Corporation Way)"
   );
@@ -43,7 +45,7 @@ const CartPage = () => {
 
       return;
     }
-    console.log("nothing");
+
     return;
   };
   const handlePickupSave = () => {
@@ -73,6 +75,9 @@ const CartPage = () => {
                       <span>x</span>
                       <span>{item.quantity}</span>
                     </p>
+                    <span className="text-sm text-green-600">
+                      In Stock: {item.availableQuantity}
+                    </span>
                   </div>
                   <p className="font-bold">
                     ${(item.quantity * item.price).toFixed(2)}
@@ -87,7 +92,8 @@ const CartPage = () => {
                           item.availableQuantity
                         )
                       }
-                      className="border border-gray-300 rounded-full px-4 py-2 hover:bg-gray-100"
+                      className="border border-gray-300 rounded-full px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                      disabled={item.quantity <= 1}
                     >
                       <Minus size={16} />
                     </button>
@@ -103,12 +109,13 @@ const CartPage = () => {
                           item.availableQuantity
                         )
                       }
-                      className="border border-gray-300 rounded-full px-4 py-2 hover:bg-gray-100"
+                      disabled={item.availableQuantity <= item.quantity}
+                      className="border border-gray-300 rounded-full px-4 py-2 hover:bg-gray-100 cursor-pointer"
                     >
                       <Plus size={16} />
                     </button>
                     <button
-                      className="text-red-600 hover:text-red-800"
+                      className="text-red-600 hover:text-red-800 cursor-pointer"
                       onClick={() => dispatch(removeFromCart(item.product))}
                     >
                       <Trash size={18} />
@@ -119,7 +126,10 @@ const CartPage = () => {
             })
           : "no item"}
 
-        <button className="mt-6 bg-transparent border-2 border-gray-300 text-gray-700 py-3 px-6 rounded-md hover:bg-gray-100 w-full font-medium">
+        <button
+          onClick={() => navigate("/shop")}
+          className="mt-6 bg-transparent border-2 cursor-pointer border-gray-300 text-gray-700 py-3 px-6 rounded-md hover:bg-gray-100 w-full font-medium"
+        >
           Add more items
         </button>
       </div>
@@ -129,7 +139,7 @@ const CartPage = () => {
         <h2 className="text-2xl font-semibold mb-4 flex items-center justify-between">
           How to get it
           <button
-            className="text-blue-600 hover:text-blue-800 flex items-center gap-2"
+            className="text-blue-600 hover:text-blue-800 flex items-center gap-2 cursor-pointer"
             onClick={() => setPickupDialogOpen(true)}
           >
             <Edit size={16} />

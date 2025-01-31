@@ -56,6 +56,7 @@ const cartSlice = createSlice({
       if (existingItem && quantity > 0) {
         const quantityDifference = quantity - existingItem.quantity;
         existingItem.quantity = quantity;
+
         state.totalQuantity += quantityDifference;
         state.totalPrice += quantityDifference * existingItem.price;
       }

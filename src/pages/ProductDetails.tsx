@@ -1,10 +1,10 @@
 import { ShoppingCart, Minus, Plus, MapPin } from "lucide-react";
 import { useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useGetProductByIdQuery } from "../redux/features/products/productsApi";
 import { IProduct } from "./Shop";
-import { useAppDispatch } from "../redux/hooks";
-import { addToCart } from "../redux/features/cart/cartSlice";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { addToCart, ICartItem } from "../redux/features/cart/cartSlice";
 import { toast } from "sonner";
 
 const ProductDetails = () => {
@@ -15,12 +15,17 @@ const ProductDetails = () => {
   const [selectedQuantity, setSelectedQuantity] = useState(1);
   const [processing, setProcessing] = useState(false);
   const dispatch = useAppDispatch();
+  const cart = useAppSelector((state) => state.cart);
+  const navigate = useNavigate();
 
   if (isLoading) return <div>Loading...</div>;
   const product = (data?.data as IProduct) || {};
+  const isCartItem = cart.items.find(
+    (item: ICartItem) => product._id === item.product
+  );
 
   const handleQuantityChange = (event: "add" | "minus") => {
-    if (event === "add" && selectedQuantity <= product.quantity) {
+    if (event === "add" && selectedQuantity < product.quantity) {
       setSelectedQuantity((prev) => prev + 1);
     } else if (event === "minus" && selectedQuantity > 1) {
       setSelectedQuantity((prev) => prev - 1);
@@ -78,21 +83,42 @@ const ProductDetails = () => {
               <span className="underline">Afterpay</span>
             </p>
           </div>
+          <div>
+            <span className="text-sm text-green-600">
+              In Stock: {product.quantity}
+            </span>
+          </div>
 
           {/* Quantity Selector */}
           <div className="flex items-center mt-6">
             <button
-              className="p-2 bg-gray-200 hover:bg-gray-300 rounded-full"
+              disabled={
+                selectedQuantity === 1 ||
+                processing ||
+                !product.inStock ||
+                isCartItem?.product
+                  ? true
+                  : false
+              }
+              className="p-2 bg-gray-200 hover:bg-gray-300 rounded-full cursor-pointer"
               onClick={() => handleQuantityChange("minus")}
             >
-              <Minus className="w-4 h-4 text-gray-600" />
+              <Minus className="w-4 h-4 " />
             </button>
             <span className="mx-4 text-lg">{selectedQuantity}</span>
             <button
-              className="p-2 bg-gray-200 hover:bg-gray-300 rounded-full"
+              disabled={
+                selectedQuantity === product.quantity ||
+                processing ||
+                !product.inStock ||
+                isCartItem?.product
+                  ? true
+                  : false
+              }
+              className="p-2 bg-gray-200 hover:bg-gray-300 rounded-full cursor-pointer"
               onClick={() => handleQuantityChange("add")}
             >
-              <Plus className="w-4 h-4 text-gray-600" />
+              <Plus className="w-4 h-4" />
             </button>
           </div>
 
@@ -118,13 +144,24 @@ const ProductDetails = () => {
           {/* Add to Cart Button */}
           <button
             onClick={handleAddToCart}
-            disabled={processing || !product.inStock}
-            className="mt-6 cursor-pointer  w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 flex items-center justify-center text-lg font-semibold"
+            disabled={
+              processing || !product.inStock || isCartItem?.product
+                ? true
+                : false
+            }
+            className="mt-6 cursor-pointer   w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 flex items-center justify-center text-lg font-semibold"
           >
             <ShoppingCart className="w-5 h-5 mr-2" /> Add to Cart $
             {(product?.price * selectedQuantity).toFixed(2)}
           </button>
-
+          {isCartItem?.product && (
+            <button
+              onClick={() => navigate("/cart")}
+              className="mt-6 cursor-pointer  w-full bg-gray-50 py-3 rounded-lg hover:bg-green-700 flex items-center justify-center text-lg font-semibold"
+            >
+              <ShoppingCart className="w-5 h-5 mr-2" /> Edit Your Cart
+            </button>
+          )}
           {/* Description Accordion */}
           <div className="mt-8 border-t border-gray-300 pt-4">
             <div
