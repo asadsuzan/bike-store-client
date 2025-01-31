@@ -5,7 +5,7 @@ export interface ICartItem {
   name: string;
   price: number;
   quantity: number;
-  inStock: number;
+  inStock: boolean;
   imageUrl?: string; // Optional: for displaying in the UI
 }
 

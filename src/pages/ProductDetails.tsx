@@ -3,15 +3,52 @@ import { useState } from "react";
 import { useParams } from "react-router";
 import { useGetProductByIdQuery } from "../redux/features/products/productsApi";
 import { IProduct } from "./Shop";
+import { useAppDispatch } from "../redux/hooks";
+import { addToCart } from "../redux/features/cart/cartSlice";
+import { toast } from "sonner";
 
 const ProductDetails = () => {
   const [isDescriptionOpen, setDescriptionOpen] = useState(false);
   const [isReturnsOpen, setReturnsOpen] = useState(false);
   const { id } = useParams();
   const { isLoading, data } = useGetProductByIdQuery(id);
+  const [selectedQuantity, setSelectedQuantity] = useState(1);
+  const [processing, setProcessing] = useState(false);
+  const dispatch = useAppDispatch();
 
   if (isLoading) return <div>Loading...</div>;
   const product = (data?.data as IProduct) || {};
+
+  const handleQuantityChange = (event: "add" | "minus") => {
+    if (event === "add" && selectedQuantity <= product.quantity) {
+      setSelectedQuantity((prev) => prev + 1);
+    } else if (event === "minus" && selectedQuantity > 1) {
+      setSelectedQuantity((prev) => prev - 1);
+    }
+  };
+  const handleAddToCart = () => {
+    setProcessing(true);
+    if (!product.inStock) {
+      alert("This product is out of stock.");
+      return;
+    }
+    const id = toast.loading("processing...", { duration: 2000 });
+    dispatch(
+      addToCart({
+        product: product._id,
+        quantity: selectedQuantity,
+        inStock: product.inStock,
+        name: product.name,
+        price: product.price,
+      })
+    );
+    toast.success("Added to cart", {
+      id: id,
+      duration: 2000,
+    });
+
+    setProcessing(false);
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
@@ -43,11 +80,17 @@ const ProductDetails = () => {
 
           {/* Quantity Selector */}
           <div className="flex items-center mt-6">
-            <button className="p-2 bg-gray-200 hover:bg-gray-300 rounded-full">
+            <button
+              className="p-2 bg-gray-200 hover:bg-gray-300 rounded-full"
+              onClick={() => handleQuantityChange("minus")}
+            >
               <Minus className="w-4 h-4 text-gray-600" />
             </button>
-            <span className="mx-4 text-lg">1</span>
-            <button className="p-2 bg-gray-200 hover:bg-gray-300 rounded-full">
+            <span className="mx-4 text-lg">{selectedQuantity}</span>
+            <button
+              className="p-2 bg-gray-200 hover:bg-gray-300 rounded-full"
+              onClick={() => handleQuantityChange("add")}
+            >
               <Plus className="w-4 h-4 text-gray-600" />
             </button>
           </div>
@@ -72,9 +115,13 @@ const ProductDetails = () => {
           </div>
 
           {/* Add to Cart Button */}
-          <button className="mt-6 w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 flex items-center justify-center text-lg font-semibold">
+          <button
+            onClick={handleAddToCart}
+            disabled={processing || !product.inStock}
+            className="mt-6 cursor-pointer  w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 flex items-center justify-center text-lg font-semibold"
+          >
             <ShoppingCart className="w-5 h-5 mr-2" /> Add to Cart $
-            {product?.price.toFixed(2)}
+            {(product?.price * selectedQuantity).toFixed(2)}
           </button>
 
           {/* Description Accordion */}
