@@ -8,6 +8,8 @@ import {
   updateQuantity,
 } from "../redux/features/cart/cartSlice";
 import { useNavigate } from "react-router";
+import { useCreateOrderMutation } from "../redux/features/order/orderApi";
+import { toast } from "sonner";
 // import { Dialog } from "@/components/ui/dialog";
 
 const CartPage = () => {
@@ -20,7 +22,7 @@ const CartPage = () => {
   const [isPickupDialogOpen, setPickupDialogOpen] = useState(false);
   const cart = useAppSelector((state) => state.cart);
   const dispatch = useAppDispatch();
-
+  const [crateOrder] = useCreateOrderMutation();
   const handleCouponButtonClick = () => {
     if (couponCode) {
       alert(`Applying coupon: ${couponCode}`);
@@ -35,7 +37,6 @@ const CartPage = () => {
     action: "add" | "minus",
     maxQuantity: number
   ) => {
-    console.log({ maxQuantity, quantity });
     if (action === "add" && maxQuantity > quantity) {
       dispatch(updateQuantity({ id, quantity: quantity + 1 }));
 
@@ -51,6 +52,24 @@ const CartPage = () => {
   };
   const handlePickupSave = () => {
     setPickupDialogOpen(false);
+  };
+
+  const handleCheckout = async () => {
+    const items = cart.items.map((item: ICartItem) => ({
+      productId: item.product,
+      quantity: item.quantity,
+    }));
+    try {
+      const res = await crateOrder({ items });
+      if (res?.data?.success) {
+        toast.success("Order created successfully");
+        dispatch(clearCart());
+        window.location.href = res?.data?.data?.checkout_url;
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (err) {
+      toast.error("Failed to create order");
+    }
   };
 
   return (
@@ -208,7 +227,10 @@ const CartPage = () => {
           </p>
         </div>
 
-        <button className="mt-4 bg-green-600 text-white py-3 px-6 w-full rounded hover:bg-green-700 font-semibold">
+        <button
+          className="mt-4 bg-green-600 text-white py-3 px-6 w-full rounded hover:bg-green-700 font-semibold"
+          onClick={handleCheckout}
+        >
           Continue to payment
         </button>
       </div>
