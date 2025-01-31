@@ -46,7 +46,7 @@ const Shop = () => {
 
   const products: IProduct[] = data?.data || [];
   const { totalPages } = data?.meta || {};
-
+  console.log(products);
   const handlePrevious = () => {
     if (currentPage > 1) setCurrentPage((prev) => prev - 1);
   };

@@ -7,6 +7,7 @@ export interface ICartItem {
   quantity: number;
   inStock: boolean;
   imageUrl?: string; // Optional: for displaying in the UI
+  availableQuantity: number;
 }
 
 interface CartState {
@@ -26,7 +27,6 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart(state, action: PayloadAction<ICartItem>) {
-      console.log({ state: state.items });
       const existingItem = state.items.find(
         (item) => item.product === action.payload.product
       );

@@ -40,6 +40,7 @@ const ProductDetails = () => {
         inStock: product.inStock,
         name: product.name,
         price: product.price,
+        availableQuantity: product.quantity,
       })
     );
     toast.success("Added to cart", {
