@@ -10,9 +10,9 @@ const Header: React.FC = () => {
   const location = useLocation();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLLIElement>(null);
-
+  const cart = useAppSelector((state) => state.cart);
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
-
+  console.log(cart);
   // Close dropdown on navigation
   useEffect(() => {
     setIsDropdownOpen(false);
@@ -61,6 +61,9 @@ const Header: React.FC = () => {
             <a className="flex items-center space-x-1 hover:text-[#004e75]">
               <ShoppingCart size={18} />
               <span>Cart</span>
+              <sup className="text-green-600 font-bold">
+                {cart.totalQuantity}
+              </sup>
             </a>
           </Link>
         </li>

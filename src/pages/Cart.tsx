@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Plus, Minus, Trash, Edit } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import {
+  clearCart,
   ICartItem,
   removeFromCart,
   updateQuantity,
@@ -132,6 +133,14 @@ const CartPage = () => {
         >
           Add more items
         </button>
+        {cart.totalPrice ? (
+          <button
+            onClick={() => dispatch(clearCart())}
+            className="mt-6 bg-red-100 border-2 cursor-pointer border-gray-300 text-gray-700 py-3 px-6 rounded-md hover:bg-gray-100 w-full font-medium"
+          >
+            Clear All Items
+          </button>
+        ) : null}
       </div>
 
       {/* Order Summary Section */}
