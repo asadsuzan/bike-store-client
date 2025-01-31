@@ -14,6 +14,7 @@ import OpenLayout from "./components/layout/OpenLayout.tsx";
 import AuthLayout from "./components/layout/AuthenticateLayout.tsx";
 import Shop from "./pages/Shop.tsx";
 import About from "./pages/About.tsx";
+import ProductDetails from "./pages/ProductDetails.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -26,6 +27,7 @@ createRoot(document.getElementById("root")!).render(
               <Route path="cart" element={<Cart />} />
               <Route path="login" element={<Login />} />
               <Route path="shop" element={<Shop />} />
+              <Route path="product/:id" element={<ProductDetails />} />
               <Route path="about" element={<About />} />
             </Route>
             <Route element={<AuthLayout />}>

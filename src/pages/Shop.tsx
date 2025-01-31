@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useGetProductsQuery } from "../redux/features/products/productsApi";
 // import a close icon from lucide react
 import { CircleX } from "lucide-react";
+import { useNavigate } from "react-router";
 
 export interface IProduct {
   _id: string;
@@ -22,6 +23,7 @@ const Shop = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [inputPage, setInputPage] = useState<string>("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -98,7 +100,11 @@ const Shop = () => {
       {/* Product Grid */}
       <div className="grid grid-cols-4 gap-4">
         {products.map((product) => (
-          <div key={product._id}>
+          <div
+            key={product._id}
+            onClick={() => navigate(`/product/${product._id}`)}
+            className="cursor-pointer"
+          >
             <img
               src={product?.imageUrl ? product.imageUrl : "./placeholder.webp"}
               alt={product.name}
