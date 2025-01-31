@@ -1,12 +1,18 @@
 import { ShoppingCart, Minus, Plus, MapPin } from "lucide-react";
 import { useState } from "react";
 import { useParams } from "react-router";
+import { useGetProductByIdQuery } from "../redux/features/products/productsApi";
+import { IProduct } from "./Shop";
 
 const ProductDetails = () => {
   const [isDescriptionOpen, setDescriptionOpen] = useState(false);
   const [isReturnsOpen, setReturnsOpen] = useState(false);
-  const id = useParams();
-  console.log(id);
+  const { id } = useParams();
+  const { isLoading, data } = useGetProductByIdQuery(id);
+
+  if (isLoading) return <div>Loading...</div>;
+  const product = (data?.data as IProduct) || {};
+
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -24,9 +30,11 @@ const ProductDetails = () => {
           {/* Product Title & Price */}
           <div>
             <h1 className="text-3xl font-bold text-gray-800">
-              Sponsor a bike, lock, light, and helmet donation
+              {product?.name}
             </h1>
-            <p className="text-2xl text-green-700 font-semibold mt-4">$50.00</p>
+            <p className="text-2xl text-green-700 font-semibold mt-4">{`$${product?.price.toFixed(
+              2
+            )}`}</p>
             <p className="text-sm text-gray-500 mt-1">
               or 4 interest-free payments of $12.50 with{" "}
               <span className="underline">Afterpay</span>
@@ -65,7 +73,8 @@ const ProductDetails = () => {
 
           {/* Add to Cart Button */}
           <button className="mt-6 w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 flex items-center justify-center text-lg font-semibold">
-            <ShoppingCart className="w-5 h-5 mr-2" /> Add to Cart $50.00
+            <ShoppingCart className="w-5 h-5 mr-2" /> Add to Cart $
+            {product?.price.toFixed(2)}
           </button>
 
           {/* Description Accordion */}
@@ -79,10 +88,9 @@ const ProductDetails = () => {
             </div>
             {isDescriptionOpen && (
               <p className="text-sm text-gray-600 mt-2">
-                We typically spend $50 in parts refurbishing a bike to donate to
-                someone in need, and another $50 to add a light, lock, and
-                helmet. Your tax-deductible donation will help cover the cost of
-                a bike donation and will be earmarked for exactly that purpose!
+                {product?.description
+                  ? product?.description
+                  : "This product does not have a description available."}
               </p>
             )}
           </div>
