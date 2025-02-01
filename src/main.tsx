@@ -15,6 +15,7 @@ import AuthLayout from "./components/layout/AuthenticateLayout.tsx";
 import Shop from "./pages/Shop.tsx";
 import About from "./pages/About.tsx";
 import ProductDetails from "./pages/ProductDetails.tsx";
+import VerifyOrder from "./pages/VerifyOrder.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -31,7 +32,8 @@ createRoot(document.getElementById("root")!).render(
               <Route path="about" element={<About />} />
             </Route>
             <Route element={<AuthLayout />}>
-              <Route path="orders" element={<Order />} />
+              <Route path="order" element={<Order />} />
+              <Route path="order/verify-order" element={<VerifyOrder />} />
             </Route>
           </Routes>
         </BrowserRouter>

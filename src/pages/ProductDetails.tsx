@@ -11,7 +11,10 @@ const ProductDetails = () => {
   const [isDescriptionOpen, setDescriptionOpen] = useState(false);
   const [isReturnsOpen, setReturnsOpen] = useState(false);
   const { id } = useParams();
-  const { isLoading, data } = useGetProductByIdQuery(id);
+  const { isLoading, data } = useGetProductByIdQuery(id, {
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true,
+  });
   const [selectedQuantity, setSelectedQuantity] = useState(1);
   const [processing, setProcessing] = useState(false);
   const dispatch = useAppDispatch();
@@ -55,7 +58,7 @@ const ProductDetails = () => {
 
     setProcessing(false);
   };
-
+  console.log(product);
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
