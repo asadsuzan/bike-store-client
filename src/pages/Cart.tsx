@@ -8,10 +8,11 @@ import {
   removeFromCart,
   updateQuantity,
 } from "../redux/features/cart/cartSlice";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 
 import { useCreateOrderMutation } from "../redux/features/order/orderApi";
 import { toast } from "sonner";
+import { useCurrentUser } from "../redux/features/auth/authSlice";
 
 // import { Dialog } from "@/components/ui/dialog";
 
@@ -26,6 +27,8 @@ const CartPage = () => {
   const [isCartItemIssue, setIsCartItemIssue] = useState();
   const cart = useAppSelector((state) => state.cart);
   const [isPreparingCheckout, setIsPreparingCheckout] = useState(false);
+  const user = useAppSelector(useCurrentUser);
+  const location = useLocation();
   const dispatch = useAppDispatch();
 
   const [createOrder, { isLoading }] = useCreateOrderMutation();
@@ -61,6 +64,13 @@ const CartPage = () => {
   };
 
   const handleCheckout = async () => {
+    if (!user || !user?.exp) {
+      console.log("no user");
+      // return <Navigate to="/login" state={{ from: location }} replace={true} />;
+      // Redirect to login and pass the current path as a state value
+      navigate("/login", { state: { from: location.pathname } });
+      return;
+    }
     const items = cart.items.map((item: ICartItem) => ({
       productId: item.product,
       quantity: item.quantity,

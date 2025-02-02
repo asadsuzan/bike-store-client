@@ -5,13 +5,17 @@ import { setUser, TUser } from "../redux/features/auth/authSlice";
 import { verifyToken } from "../utils/verifyToken";
 import { useAppDispatch } from "../redux/hooks";
 import { toast } from "sonner";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 
 const Login = () => {
   const { register, handleSubmit } = useForm();
   const [login] = useLoginMutation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // const from = location.state?.from?.pathname || "/";
+  const from = location.state?.from || "/";
 
   const onSubmit = async (data: FieldValues) => {
     const toastId = toast.loading("Please wait...", {});
@@ -24,7 +28,9 @@ const Login = () => {
       toast.success("Logged in success", {
         id: toastId,
       });
-      navigate(`/`);
+      // navigate(`/`);
+      // Navigate back to the protected page or home
+      navigate(from, { replace: true });
     } catch (error) {
       const message =
         (error as { data: { message: string } }).data.message ||
