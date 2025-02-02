@@ -18,7 +18,10 @@ import ProductDetails from "./pages/ProductDetails.tsx";
 import VerifyOrder from "./pages/VerifyOrder.tsx";
 import AuthenticateLayoutWithoutHeader from "./components/layout/AuthenticateLayoutWithoutHeader.tsx";
 import Dashboard from "./components/layout/Dashboard.tsx";
-import AddProducts from "./pages/AddProducts.tsx";
+import InsertProducts from "./pages/InsertProducts.tsx";
+import Products from "./pages/Products.tsx";
+import Profile from "./pages/Profile.tsx";
+import AdminLayout from "./components/layout/AdminLaout.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -37,7 +40,14 @@ createRoot(document.getElementById("root")!).render(
             <Route element={<AuthLayout />}>
               <Route element={<Dashboard />}>
                 <Route path="dashboard/orders" element={<Order />} />
-                <Route path="dashboard/add-product" element={<AddProducts />} />
+                <Route element={<AdminLayout />}>
+                  <Route
+                    path="dashboard/insert-product"
+                    element={<InsertProducts />}
+                  />
+                  <Route path="dashboard/products" element={<Products />} />
+                </Route>
+                <Route path="dashboard/profile" element={<Profile />} />
               </Route>
             </Route>
             <Route element={<AuthenticateLayoutWithoutHeader />}>

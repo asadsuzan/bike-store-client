@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Menu, X } from "lucide-react";
 
 interface Order {
   id: number;
@@ -10,7 +9,6 @@ interface Order {
 
 const Order = () => {
   const [orders, setOrders] = useState<Order[]>([]);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -34,17 +32,9 @@ const Order = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Main Content */}
-      <div className="p-4">
-        {/* Mobile Menu Button */}
-        <button
-          className="lg:hidden bg-gray-800 text-white p-2 rounded-md"
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        >
-          {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
-
+      <div>
         {/* Table Section */}
-        <h1 className="text-2xl font-bold mb-4 mt-4">User Orders Dashboard</h1>
+        <h1 className="text-1xl font-bold my-2">Your Orders</h1>
 
         {orders.length === 0 ? (
           <p>No orders found.</p>

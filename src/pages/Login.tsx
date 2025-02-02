@@ -14,8 +14,7 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // const from = location.state?.from?.pathname || "/";
-  const from = location.state?.from || "/";
+  const from = location.state?.from?.pathname || "/";
 
   const onSubmit = async (data: FieldValues) => {
     const toastId = toast.loading("Please wait...", {});
