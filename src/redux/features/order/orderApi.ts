@@ -46,11 +46,24 @@ const orderApi = baseApi.injectEndpoints({
       }),
     }),
     getOrders: builder.query({
-      query: () => ({
-        url: "/order/orders",
+      query: ({ status = "" }) => ({
+        url: `/order/orders?status=${status}`,
         method: "GET",
       }),
     }),
+    getOrderSummary: builder.query({
+      query: () => ({
+        url: "/order/summary",
+        method: "GET",
+      }),
+    }),
+    deleteOrder: builder.mutation<void, string>({
+      query: (orderId) => ({
+        url: `/order/${orderId}`,
+        method: "DELETE",
+      }),
+    }),
+
     verifyOrder: builder.query({
       query: (order_id) => ({
         url: "/order/verify-payment",
@@ -65,4 +78,6 @@ export const {
   useCreateOrderMutation,
   useVerifyOrderQuery,
   useGetOrdersQuery,
+  useGetOrderSummaryQuery,
+  useDeleteOrderMutation,
 } = orderApi;
