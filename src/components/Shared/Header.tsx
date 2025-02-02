@@ -82,7 +82,7 @@ const Header: React.FC = () => {
               {user ? (
                 <>
                   <li className="px-4 py-2 hover:bg-gray-100">
-                    <Link to="/dashboard" className="block">
+                    <Link to="/dashboard/orders" className="block">
                       Dashboard
                     </Link>
                   </li>

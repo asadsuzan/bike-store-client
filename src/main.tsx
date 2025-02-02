@@ -17,6 +17,8 @@ import About from "./pages/About.tsx";
 import ProductDetails from "./pages/ProductDetails.tsx";
 import VerifyOrder from "./pages/VerifyOrder.tsx";
 import AuthenticateLayoutWithoutHeader from "./components/layout/AuthenticateLayoutWithoutHeader.tsx";
+import Dashboard from "./components/layout/Dashboard.tsx";
+import AddProducts from "./pages/AddProducts.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -33,7 +35,10 @@ createRoot(document.getElementById("root")!).render(
               <Route path="about" element={<About />} />
             </Route>
             <Route element={<AuthLayout />}>
-              <Route path="dashboard/orders" element={<Order />} />
+              <Route element={<Dashboard />}>
+                <Route path="dashboard/orders" element={<Order />} />
+                <Route path="dashboard/add-product" element={<AddProducts />} />
+              </Route>
             </Route>
             <Route element={<AuthenticateLayoutWithoutHeader />}>
               <Route path="order/verify-order" element={<VerifyOrder />} />
