@@ -14,12 +14,11 @@ import { useCreateOrderMutation } from "../redux/features/order/orderApi";
 import { toast } from "sonner";
 import { useCurrentUser } from "../redux/features/auth/authSlice";
 
-// import { Dialog } from "@/components/ui/dialog";
-
 const CartPage = () => {
   const [couponCode, setCouponCode] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const navigate = useNavigate();
+  const user = useAppSelector(useCurrentUser);
   const [pickupAddress, setPickupAddress] = useState(
     "3961 East Bayshore Road (Entrance faces our parking lot, off Corporation Way)"
   );
@@ -27,9 +26,8 @@ const CartPage = () => {
   const [isCartItemIssue, setIsCartItemIssue] = useState();
   const cart = useAppSelector((state) => state.cart);
   const [isPreparingCheckout, setIsPreparingCheckout] = useState(false);
-  const user = useAppSelector(useCurrentUser);
-  const location = useLocation();
   const dispatch = useAppDispatch();
+  const location = useLocation();
 
   const [createOrder, { isLoading }] = useCreateOrderMutation();
   const handleCouponButtonClick = () => {
@@ -64,19 +62,23 @@ const CartPage = () => {
   };
 
   const handleCheckout = async () => {
-    if (!user || !user?.exp) {
-      console.log("no user");
-      // return <Navigate to="/login" state={{ from: location }} replace={true} />;
-      // Redirect to login and pass the current path as a state value
-      navigate("/login", { state: { from: location.pathname } });
-      return;
-    }
     const items = cart.items.map((item: ICartItem) => ({
       productId: item.product,
       quantity: item.quantity,
     }));
     let id;
     try {
+      if (!user?.userId) {
+        toast.error("Please log in to checkout", { id });
+        navigate("/login", { state: { from: location }, replace: true });
+        return;
+      }
+      if (user.role === "admin") {
+        toast.error("Admin checkout unauthorized.", { id });
+        // navigate(`/`, { replace: true });
+
+        return;
+      }
       const res = await createOrder({ items });
 
       if (res?.data?.data) {
