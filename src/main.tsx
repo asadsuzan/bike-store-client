@@ -45,7 +45,7 @@ createRoot(document.getElementById("root")!).render(
                     path="dashboard/insert-product"
                     element={<InsertProducts />}
                   />
-                  <Route path="dashboard/products" element={<Products />} />
+                  <Route path="dashboard/inventory" element={<Products />} />
                 </Route>
                 <Route path="dashboard/profile" element={<Profile />} />
               </Route>
