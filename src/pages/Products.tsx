@@ -3,12 +3,14 @@ import { useGetProductsQuery } from "../redux/features/products/productsApi";
 import { CircleX, Edit, Eye, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { IProduct } from "./Shop";
+import { useNavigate } from "react-router";
 
 const Products = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [inputPage, setInputPage] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -132,7 +134,10 @@ const Products = () => {
                   {product.description}
                 </td>
                 <td className="py-3 px-4 hover:bg-gray-100">
-                  <button className="p-1 rounded-md text-blue-900 hover:bg-blue-500 cursor-pointer">
+                  <button
+                    onClick={() => navigate(`/product/${product._id}`)}
+                    className="p-1 rounded-md text-blue-900 hover:bg-blue-500 cursor-pointer"
+                  >
                     <Eye className="w-5 h-5 text-gray-600" />
                   </button>
                   <button className="p-1 rounded-md text-blue-900 hover:bg-blue-500 cursor-pointer">
