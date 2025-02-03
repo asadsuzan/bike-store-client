@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { CheckCircle } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 import { RichTextEditor } from "@mantine/rte";
+import { useInsertProductMutation } from "../../redux/features/products/productsApi";
+import { toast } from "sonner";
 
 const ProductForm = () => {
   const [categories] = useState([
@@ -23,18 +25,31 @@ const ProductForm = () => {
     "Ruide",
     "Hi-Target",
   ]);
-
+  const [insertProduct] = useInsertProductMutation();
   const {
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors },
   } = useForm();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onSubmit = (data: any) => {
-    console.log("Form Data:", data);
-    alert("Product Submitted Successfully!");
+  const onSubmit = async (data: any) => {
+    const toastId = toast.loading("Please wait...");
+    try {
+      const response = await insertProduct(data);
+      if (response?.data?.data) {
+        toast.success("Product created successfully", { id: toastId });
+        reset();
+      } else {
+        toast.error("Error creating product", { id: toastId });
+        console.error(response.error);
+      }
+    } catch (err) {
+      toast.error("Error creating product", { id: toastId });
+      console.error(err);
+    }
   };
 
   return (
