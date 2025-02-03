@@ -1,10 +1,16 @@
 import clsx from "clsx";
 import { useGetProductsQuery } from "../redux/features/products/productsApi";
+import { Edit, Eye, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { IProduct } from "./Shop";
 
 const Products = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [inputPage, setInputPage] = useState<string>("");
+  // const [searchTerm, setSearchTerm] = useState("");
   const { isLoading, data } = useGetProductsQuery(
     {
-      page: 1,
+      page: currentPage,
       limit: 10,
       search: "", // Replace with actual search term when implemented
     },
@@ -13,9 +19,30 @@ const Products = () => {
       refetchOnFocus: true,
     }
   );
+  const handleJumpToPage = () => {
+    const pageNumber = parseInt(inputPage, 10);
+    if (!isNaN(pageNumber) && pageNumber > 0 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    } else {
+      alert(`Please enter a valid page number between 1 and ${totalPages}`);
+    }
+  };
+
+  const handleDropdownChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setCurrentPage(parseInt(event.target.value, 10));
+  };
   if (isLoading) return <div>Loading...</div>;
-  const products = data?.data || [];
-  // console.log(products);
+  const products: IProduct[] = data?.data || [];
+  const { totalPages } = data?.meta || {};
+  const handlePrevious = () => {
+    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
+  };
   return (
     <div>
       <div className="overflow-x-auto">
@@ -34,7 +61,7 @@ const Products = () => {
             </tr>
           </thead>
           <tbody>
-            {products.map((product, index: number) => (
+            {products.map((product: IProduct, index: number) => (
               <tr key={product._id} className="border-b border-gray-200">
                 <td className="py-3 px-4 hover:bg-gray-100">{index + 1}</td>
                 <td className="py-3 px-4 hover:bg-gray-100">{product.name}</td>
@@ -73,13 +100,80 @@ const Products = () => {
                 </td>
                 <td className="py-3 px-4 hover:bg-gray-100">
                   <button className="p-1 rounded-md text-blue-900 hover:bg-blue-500 cursor-pointer">
-                    View
+                    <Eye className="w-5 h-5 text-gray-600" />
+                  </button>
+                  <button className="p-1 rounded-md text-blue-900 hover:bg-blue-500 cursor-pointer">
+                    <Edit className="w-5 h-5 text-gray-600" />
+                  </button>
+                  <button className="p-1 rounded-md text-blue-900 hover:bg-blue-500 cursor-pointer">
+                    <Trash2 className="w-5 h-5 text-red-600" />{" "}
                   </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+      </div>
+      {/* Pagination Controls */}
+      <div className="flex justify-center mt-4">
+        <button
+          onClick={handlePrevious}
+          disabled={currentPage === 1}
+          className={`px-4 py-2 mr-2 rounded ${
+            currentPage === 1
+              ? "bg-gray-300 cursor-not-allowed"
+              : "bg-blue-500 text-white"
+          }`}
+        >
+          Previous
+        </button>
+
+        <span className="px-4 py-2">
+          Page {currentPage} of {totalPages}
+        </span>
+
+        <button
+          onClick={handleNext}
+          disabled={currentPage === totalPages}
+          className={`px-4 py-2 ml-2 rounded ${
+            currentPage === totalPages
+              ? "bg-gray-300 cursor-not-allowed"
+              : "bg-blue-500 text-white"
+          }`}
+        >
+          Next
+        </button>
+
+        {/* Combined Input and Dropdown */}
+        <div className="ml-4 flex items-center gap-2">
+          <select
+            value={currentPage}
+            onChange={handleDropdownChange}
+            className="border px-2 py-1 rounded"
+          >
+            {Array.from({ length: totalPages }, (_, index) => (
+              <option key={index + 1} value={index + 1}>
+                Page {index + 1}
+              </option>
+            ))}
+          </select>
+
+          <input
+            type="number"
+            min="1"
+            max={totalPages}
+            value={inputPage}
+            onChange={(e) => setInputPage(e.target.value)}
+            placeholder="Page"
+            className="w-16 px-2 py-1 border rounded"
+          />
+          <button
+            onClick={handleJumpToPage}
+            className="px-4 py-2 bg-blue-500 text-white rounded"
+          >
+            Go
+          </button>
+        </div>
       </div>
     </div>
   );
