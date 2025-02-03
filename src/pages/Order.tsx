@@ -52,7 +52,7 @@ const Order = () => {
   if (isLoading || summaryLoading) return <div>Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className=" bg-gray-50 p-6">
       <h1 className="text-2xl font-bold mb-4">Order History</h1>
 
       {data && data?.length === 0 ? (

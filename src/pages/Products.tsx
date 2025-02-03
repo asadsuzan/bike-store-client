@@ -1,18 +1,32 @@
 import clsx from "clsx";
 import { useGetProductsQuery } from "../redux/features/products/productsApi";
-import { Edit, Eye, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { CircleX, Edit, Eye, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { IProduct } from "./Shop";
 
 const Products = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [inputPage, setInputPage] = useState<string>("");
-  // const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+      setCurrentPage(1);
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [searchTerm]);
+  const clearSearch = () => {
+    setSearchTerm("");
+    setDebouncedSearchTerm("");
+    setCurrentPage(1);
+  };
   const { isLoading, data } = useGetProductsQuery(
     {
       page: currentPage,
       limit: 10,
-      search: "", // Replace with actual search term when implemented
+      search: debouncedSearchTerm, // Replace with actual search term when implemented
     },
     {
       refetchOnMountOrArgChange: true,
@@ -44,7 +58,26 @@ const Products = () => {
     if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
   };
   return (
-    <div>
+    <div className="bg-gray-50 p-6">
+      {/* Search Bar */}
+      <div className="relative mb-2">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search by product name"
+          className="w-full px-4 py-2 rounded border pr-10" // Added right padding for icon
+        />
+        {searchTerm && (
+          <span
+            onClick={clearSearch}
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
+          >
+            <CircleX size={20} />
+          </span>
+        )}
+      </div>
+      <h1 className="text-2xl font-bold mb-4">Products In Inventory</h1>
       <div className="overflow-x-auto">
         <table className="w-full bg-white text-sm md:text-base rounded-lg shadow-md">
           <thead className="bg-gray-200 text-left">
