@@ -65,7 +65,7 @@ const ProductDetails = () => {
         {/* Left Image Section */}
         <div className="w-full">
           <img
-            src="./placeholder.webp"
+            src={product.image}
             alt="Product Image"
             className="w-full rounded-lg shadow-md"
           />

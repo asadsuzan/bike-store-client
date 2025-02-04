@@ -1,3 +1,4 @@
+import { IProduct } from "../../../pages/Shop";
 import { baseApi } from "../../api/baseApi";
 
 const productsApi = baseApi.injectEndpoints({
@@ -21,6 +22,13 @@ const productsApi = baseApi.injectEndpoints({
         body: product,
       }),
     }),
+    updateProduct: builder.mutation({
+      query: ({ product, id }: { product: IProduct; id: string }) => ({
+        url: `/products/${id}`,
+        method: "PUT",
+        body: product,
+      }),
+    }),
   }),
 });
 
@@ -28,4 +36,5 @@ export const {
   useGetProductsQuery,
   useGetProductByIdQuery,
   useInsertProductMutation,
+  useUpdateProductMutation,
 } = productsApi;

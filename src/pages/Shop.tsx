@@ -13,7 +13,7 @@ export interface IProduct {
   description: string;
   inStock: boolean;
   quantity: number;
-  imageUrl?: string;
+  image?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -105,10 +105,7 @@ const Shop = () => {
             onClick={() => navigate(`/product/${product._id}`)}
             className="cursor-pointer"
           >
-            <img
-              src={product?.imageUrl ? product.imageUrl : "./placeholder.webp"}
-              alt={product.name}
-            />
+            <img src={product?.image} alt={product.name} />
             <h2>{product.name}</h2>
 
             <p

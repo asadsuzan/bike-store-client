@@ -143,7 +143,12 @@ const Products = () => {
                   >
                     <Eye className="w-5 h-5 text-gray-600" />
                   </button>
-                  <button className="p-1 rounded-md text-blue-900 hover:bg-blue-500 cursor-pointer">
+                  <button
+                    className="p-1 rounded-md text-blue-900 hover:bg-blue-500 cursor-pointer"
+                    onClick={() =>
+                      navigate(`/dashboard/edit-product/${product._id}`)
+                    }
+                  >
                     <Edit className="w-5 h-5 text-gray-600" />
                   </button>
                   <button className="p-1 rounded-md text-blue-900 hover:bg-blue-500 cursor-pointer">

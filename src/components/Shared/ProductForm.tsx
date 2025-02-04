@@ -1,11 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CheckCircle } from "lucide-react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, FieldValues } from "react-hook-form";
 import { RichTextEditor } from "@mantine/rte";
-import { useInsertProductMutation } from "../../redux/features/products/productsApi";
+import {
+  useInsertProductMutation,
+  useUpdateProductMutation,
+} from "../../redux/features/products/productsApi";
 import { toast } from "sonner";
+import { IProduct } from "../../pages/Shop";
 
-const ProductForm = () => {
+interface IProductFormProps {
+  productData?: IProduct;
+  id?: string;
+}
+
+const ProductForm = ({ productData, id }: IProductFormProps) => {
   const [categories] = useState([
     "Robotic",
     "Manual",
@@ -26,31 +35,64 @@ const ProductForm = () => {
     "Hi-Target",
   ]);
   const [insertProduct] = useInsertProductMutation();
+  const [updateProduct] = useUpdateProductMutation();
+
   const {
     register,
     handleSubmit,
     control,
     reset,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: productData || {
+      name: "",
+      description: "",
+      price: 0,
+      quantity: 0,
+      category: "",
+      brand: "",
+      image: "",
+    },
+  });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onSubmit = async (data: any) => {
+  // Prepopulate the form if editing
+  useEffect(() => {
+    if (productData) reset(productData);
+  }, [productData, reset]);
+
+  const onSubmit = async (data: FieldValues) => {
     const toastId = toast.loading("Please wait...");
     try {
-      const response = await insertProduct(data);
-      if (response?.data?.data) {
-        toast.success("Product created successfully", { id: toastId });
-        reset();
+      if (productData && id) {
+        // Update Product
+        const response = await updateProduct({
+          product: {
+            ...productData,
+            ...data,
+          },
+          id: id as unknown as string,
+        });
+        if (response?.data) {
+          toast.success("Product updated successfully", { id: toastId });
+        } else {
+          toast.error("Error updating product", { id: toastId });
+        }
       } else {
-        toast.error("Error creating product", { id: toastId });
-        console.error(response.error);
+        // Create Product
+        const response = await insertProduct(data);
+        if (response?.data?.data) {
+          toast.success("Product created successfully", { id: toastId });
+          reset();
+        } else {
+          toast.error("Error creating product", { id: toastId });
+        }
       }
-    } catch (err) {
-      toast.error("Error creating product", { id: toastId });
-      console.error(err);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      toast.error("An error occurred", { id: toastId });
+      console.log(err);
     }
-    console.table(data);
+    console.log(data);
   };
 
   return (
@@ -89,7 +131,6 @@ const ProductForm = () => {
           <Controller
             name="description"
             control={control}
-            defaultValue=""
             render={({ field }) => (
               <RichTextEditor
                 {...field}
@@ -226,7 +267,8 @@ const ProductForm = () => {
           type="submit"
           className="w-full cursor-pointer bg-green-500 text-white py-3 rounded-md hover:bg-green-900 flex items-center justify-center"
         >
-          <CheckCircle className="mr-2" /> Submit
+          <CheckCircle className="mr-2" />
+          {productData ? "Update Product" : "Create Product"}
         </button>
       </form>
     </div>
