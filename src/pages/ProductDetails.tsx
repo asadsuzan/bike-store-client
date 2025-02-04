@@ -175,11 +175,10 @@ const ProductDetails = () => {
               {isDescriptionOpen ? <Minus size={20} /> : <Plus size={20} />}
             </div>
             {isDescriptionOpen && (
-              <p className="text-sm text-gray-600 mt-2">
-                {product?.description
-                  ? product?.description
-                  : "This product does not have a description available."}
-              </p>
+              <p
+                className="text-sm text-gray-600 mt-2"
+                dangerouslySetInnerHTML={{ __html: product.description }}
+              ></p>
             )}
           </div>
           {/* Returns Accordion */}

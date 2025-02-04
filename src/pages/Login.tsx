@@ -8,7 +8,9 @@ import { toast } from "sonner";
 import { useLocation, useNavigate } from "react-router";
 
 const Login = () => {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit } = useForm({
+    defaultValues: { email: "admin@gmail.com", password: "adminadmin" },
+  });
   const [login] = useLoginMutation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();

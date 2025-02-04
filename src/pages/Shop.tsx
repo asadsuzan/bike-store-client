@@ -110,7 +110,11 @@ const Shop = () => {
               alt={product.name}
             />
             <h2>{product.name}</h2>
-            <p>{product.description}</p>
+
+            <p
+              className="prose max-w-none"
+              dangerouslySetInnerHTML={{ __html: product.description }}
+            />
             <p>Price: ${product.price}</p>
             <p>In Stock: {product.inStock ? "Yes" : "No"}</p>
           </div>

@@ -50,6 +50,7 @@ const ProductForm = () => {
       toast.error("Error creating product", { id: toastId });
       console.error(err);
     }
+    console.table(data);
   };
 
   return (

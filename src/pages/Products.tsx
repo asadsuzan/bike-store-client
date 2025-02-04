@@ -130,8 +130,11 @@ const Products = () => {
                     <span className="text-red-700">Out of Stock</span>
                   )}
                 </td>
-                <td className="py-3 px-4 hover:bg-gray-100">
-                  {product.description}
+                <td
+                  className="py-3 px-4 hover:bg-gray-100"
+                  dangerouslySetInnerHTML={{ __html: product?.description }}
+                >
+                  {/* {product.description} */}
                 </td>
                 <td className="py-3 px-4 hover:bg-gray-100">
                   <button
