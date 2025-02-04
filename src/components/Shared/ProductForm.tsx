@@ -8,6 +8,7 @@ import {
 } from "../../redux/features/products/productsApi";
 import { toast } from "sonner";
 import { IProduct } from "../../pages/Shop";
+import RecentItems from "./RecentItems";
 
 interface IProductFormProps {
   productData?: IProduct;
@@ -15,6 +16,9 @@ interface IProductFormProps {
 }
 
 const ProductForm = ({ productData, id }: IProductFormProps) => {
+  const [recentFiveItem, setRecentFiveItems] = useState<
+    { id: string; name: string; status: "new" | "updated" }[]
+  >([]);
   const [categories] = useState([
     "Robotic",
     "Manual",
@@ -55,6 +59,26 @@ const ProductForm = ({ productData, id }: IProductFormProps) => {
     },
   });
 
+  const handleRecentItems = (newItem: {
+    id: string;
+    name: string;
+    status: "new" | "updated";
+  }) => {
+    setRecentFiveItems((prevItems) => {
+      // Check if the item already exists by id
+      if (prevItems.some((item) => item.id === newItem.id)) {
+        return prevItems;
+      }
+
+      // Add the new item at the beginning of the array
+      const updatedItems = [newItem, ...prevItems];
+
+      // Keep only the most recent 5 items
+      return updatedItems.slice(0, 5);
+    });
+  };
+
+  console.log(recentFiveItem);
   // Prepopulate the form if editing
   useEffect(() => {
     if (productData) reset(productData);
@@ -73,6 +97,12 @@ const ProductForm = ({ productData, id }: IProductFormProps) => {
           id: id as unknown as string,
         });
         if (response?.data) {
+          handleRecentItems({
+            id: response?.data?.data?._id,
+            name: response?.data?.data?.name,
+            status: "updated",
+          });
+          console.log(response?.data?.data?.name);
           toast.success("Product updated successfully", { id: toastId });
         } else {
           toast.error("Error updating product", { id: toastId });
@@ -81,6 +111,12 @@ const ProductForm = ({ productData, id }: IProductFormProps) => {
         // Create Product
         const response = await insertProduct(data);
         if (response?.data?.data) {
+          handleRecentItems({
+            id: response?.data?.data?._id,
+            name: response?.data?.data?.name,
+            status: "new",
+          });
+          console.log(response?.data?.data?.name);
           toast.success("Product created successfully", { id: toastId });
           reset();
         } else {
@@ -92,11 +128,21 @@ const ProductForm = ({ productData, id }: IProductFormProps) => {
       toast.error("An error occurred", { id: toastId });
       console.log(err);
     }
-    console.log(data);
   };
+
+  function stripHtmlTags(value: string) {
+    return value.replace(/<\/?[^>]+(>|$)/g, "");
+  }
 
   return (
     <div className="mx-auto bg-gray-100 p-8 rounded-lg shadow-md">
+      {recentFiveItem?.length ? (
+        <div className="mb-2">
+          <RecentItems items={recentFiveItem} />
+        </div>
+      ) : (
+        ""
+      )}
       <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
         {/* Product Name */}
         <div>
@@ -131,6 +177,12 @@ const ProductForm = ({ productData, id }: IProductFormProps) => {
           <Controller
             name="description"
             control={control}
+            rules={{
+              required: "Product description is required",
+              validate: (value) =>
+                stripHtmlTags(value).length >= 50 ||
+                "Description must be at least 50 characters long without HTML tags",
+            }}
             render={({ field }) => (
               <RichTextEditor
                 {...field}
@@ -139,6 +191,11 @@ const ProductForm = ({ productData, id }: IProductFormProps) => {
               />
             )}
           />
+          {errors.description && (
+            <p className="text-red-500 text-sm">
+              {String(errors.description.message)}
+            </p>
+          )}
         </div>
 
         {/* Price */}
@@ -178,7 +235,7 @@ const ProductForm = ({ productData, id }: IProductFormProps) => {
             id="quantity"
             {...register("quantity", {
               required: "Quantity is required",
-              min: 1,
+              min: { value: 1, message: "Quantity must be at least 1" },
             })}
           />
           {errors.quantity && (
