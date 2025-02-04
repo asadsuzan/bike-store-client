@@ -4,8 +4,15 @@ import { baseApi } from "../../api/baseApi";
 const productsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getProducts: builder.query({
-      query: ({ page = 1, limit = 5, search = "" }) => ({
-        url: `/products?page=${page}&limit=${limit}&search=${search}`,
+      query: ({
+        page = 1,
+        limit = 5,
+        search = "",
+        minPrice = "",
+        maxPrice = "",
+        category = "",
+      }) => ({
+        url: `/products?page=${page}&limit=${limit}&search=${search}&minPrice=${minPrice}&maxPrice=${maxPrice}&category=${category}`,
         method: "GET",
       }),
     }),

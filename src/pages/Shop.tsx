@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useGetProductsQuery } from "../redux/features/products/productsApi";
-// import a close icon from lucide react
 import { CircleX } from "lucide-react";
 import { useNavigate } from "react-router";
+import { productCategories } from "../constants/product";
 
 export interface IProduct {
   _id: string;
@@ -22,8 +22,11 @@ const Shop = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("200000000000");
   const [inputPage, setInputPage] = useState<string>("");
   const navigate = useNavigate();
+  const [category, setCategory] = useState("");
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -36,7 +39,14 @@ const Shop = () => {
   const limit = 5;
 
   const { isLoading, data } = useGetProductsQuery(
-    { page: currentPage, limit, search: debouncedSearchTerm },
+    {
+      page: currentPage,
+      limit,
+      search: debouncedSearchTerm,
+      minPrice,
+      maxPrice,
+      category,
+    },
     {
       refetchOnMountOrArgChange: true,
     }
@@ -45,8 +55,8 @@ const Shop = () => {
   if (isLoading) return <div>Loading...</div>;
 
   const products: IProduct[] = data?.data || [];
-  const { totalPages } = data?.meta || {};
-  console.log(products);
+  const totalPages = data?.meta?.totalPages || 0;
+
   const handlePrevious = () => {
     if (currentPage > 1) setCurrentPage((prev) => prev - 1);
   };
@@ -78,49 +88,76 @@ const Shop = () => {
 
   return (
     <div>
-      {/* Search Bar */}
-      <div className="relative mb-4">
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search by product name"
-          className="w-full px-4 py-2 rounded border pr-10" // Added right padding for icon
-        />
-        {searchTerm && (
-          <span
-            onClick={clearSearch}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
+      <div className="flex gap-5 justify-between">
+        <div className="relative mb-4 flex-1">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search by product name"
+            className="w-full px-4 py-2 rounded border pr-10"
+          />
+          {searchTerm && (
+            <span
+              onClick={clearSearch}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
+            >
+              <CircleX size={20} />
+            </span>
+          )}
+        </div>
+        <div className="flex gap-2 mb-4">
+          <input
+            type="number"
+            placeholder="min price"
+            onChange={(e) => setMinPrice(e.target.value)}
+            className="w-20 px-4  rounded border "
+          />
+          <input
+            type="number"
+            placeholder="max price"
+            onChange={(e) => setMaxPrice(e.target.value)}
+            className="w-20 px-4 rounded border "
+          />
+        </div>
+        <div className="">
+          <select
+            id="sort-by-category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="w-full px-4 py-2 rounded border"
           >
-            <CircleX size={20} />
-          </span>
-        )}
+            {productCategories?.map((item) => (
+              <option key={item} value={item === "All" ? "" : item}>
+                {item}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
-
-      {/* Product Grid */}
       <div className="grid grid-cols-4 gap-4">
-        {products.map((product) => (
+        {products?.map((product) => (
           <div
-            key={product._id}
-            onClick={() => navigate(`/product/${product._id}`)}
+            key={product?._id}
+            onClick={() => navigate(`/product/${product?._id}`)}
             className="cursor-pointer"
           >
-            <img src={product?.image} alt={product.name} />
-            <h2>{product.name}</h2>
+            <img src={product?.image} alt={product?.name} />
+            <h2>{product?.name}</h2>
 
             <p
               className="prose max-w-none"
               dangerouslySetInnerHTML={{
-                __html: product.description.slice(0, 100),
+                __html: product?.description?.slice(0, 100) || "",
               }}
             />
-            <p>Price: ${product.price}</p>
-            <p>In Stock: {product.inStock ? "Yes" : "No"}</p>
+            <p>Price: ${product?.price}</p>
+            <p>In Stock: {product?.inStock ? "Yes" : "No"}</p>
           </div>
         ))}
       </div>
+      {!products?.length && <div>No Products</div>}
 
-      {/* Pagination Controls */}
       <div className="flex justify-center mt-4">
         <button
           onClick={handlePrevious}
@@ -150,7 +187,6 @@ const Shop = () => {
           Next
         </button>
 
-        {/* Combined Input and Dropdown */}
         <div className="ml-4 flex items-center gap-2">
           <select
             value={currentPage}

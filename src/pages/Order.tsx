@@ -11,7 +11,6 @@ import {
   ReactElement,
   ReactNode,
   JSXElementConstructor,
-  ReactPortal,
   useState,
 } from "react";
 import clsx from "clsx";
@@ -34,6 +33,7 @@ const Order = () => {
       refetchOnFocus: true,
       refetchOnMountOrArgChange: true,
     });
+
   const handleDelete = async (oderId: string) => {
     const id = toast.loading("please wait...");
     try {
@@ -55,14 +55,14 @@ const Order = () => {
     <div className=" bg-gray-50 p-6">
       <h1 className="text-2xl font-bold mb-4">Order History</h1>
 
-      {data && data?.length === 0 ? (
+      {data?.length === 0 ? (
         <p>No orders found.</p>
       ) : (
         <div className="overflow-x-auto">
           {/* oder summary  */}
 
           <div>
-            {oderSummary?.success ? (
+            {oderSummary?.success && (
               <div className="flex gap-5 my-3 overflow-x-auto">
                 <p
                   className={clsx(
@@ -127,8 +127,6 @@ const Order = () => {
                   Shipped ({oderSummary?.data?.summary?.shipped})
                 </p>
               </div>
-            ) : (
-              "null"
             )}
           </div>
 
@@ -145,7 +143,7 @@ const Order = () => {
               </tr>
             </thead>
             <tbody>
-              {data.data.orders.map(
+              {data?.data?.orders.map(
                 (order: {
                   transaction: {
                     id:
@@ -170,77 +168,56 @@ const Order = () => {
                     | undefined;
                 }) => (
                   <tr
-                    key={order.transaction.id?.toString() || undefined}
+                    key={order?.transaction?.id?.toString() || undefined}
                     className="border-b hover:bg-gray-100"
                   >
                     <td className="py-3 px-4 text-blue-600 underline">
                       <Link
-                        to={`/order/verify-order?order_id=${order.transaction.id}`}
+                        to={`/order/verify-order?order_id=${order?.transaction?.id}`}
                       >
-                        #{order.transaction.id?.toString()}
+                        #{order?.transaction?.id?.toString()}
                       </Link>
                     </td>
                     <td className="py-3 px-4">
-                      {order?.items.map(
+                      {order?.items?.map(
                         (item: {
                           productId: {
                             _id: Key | null | undefined;
-                            name:
-                              | string
-                              | number
-                              | boolean
-                              | ReactElement<
-                                  any,
-                                  string | JSXElementConstructor<any>
-                                >
-                              | Iterable<ReactNode>
-                              | ReactPortal
-                              | null
-                              | undefined;
+                            name: string | undefined;
                           };
-                          quantity:
-                            | string
-                            | number
-                            | boolean
-                            | ReactElement<
-                                any,
-                                string | JSXElementConstructor<any>
-                              >
-                            | Iterable<ReactNode>
-                            | ReactPortal
-                            | null
-                            | undefined;
+                          quantity: number | undefined;
                         }) => (
                           <div
-                            key={item.productId._id}
+                            key={item?.productId?._id}
                             className="flex items-center gap-2"
                           >
                             <Link
-                              to={`/product/${item.productId._id}`}
+                              to={`/product/${item?.productId?._id}`}
                               className="underline text-blue-500"
                             >
-                              {item.productId.name}
+                              {item?.productId?.name}
                             </Link>
                             <X size={15} className="text-red-500" />
                             <span className="text-[#00a86b] font-semibold">
-                              {item.quantity}
+                              {item?.quantity}
                             </span>
                           </div>
                         )
                       )}
                     </td>
-                    <td className="py-3 px-4">{order.items.length}</td>
+                    <td className="py-3 px-4">{order?.items?.length}</td>
                     <td className="py-3 px-4">
-                      ${order.totalPrice.toFixed(2)}
+                      ${order?.totalPrice?.toFixed(2)}
                     </td>
                     <td className="py-3 px-4">
-                      {new Date(order?.transaction?.date_time).toLocaleString()}
+                      {new Date(
+                        order?.transaction?.date_time
+                      )?.toLocaleString()}
                     </td>
                     <td className="py-3 px-4">
-                      {/* 'Pending' | 'Paid' | 'Shipped' | 'Completed' | 'Cancelled'; */}
                       <span
                         className={`px-3 py-1 rounded-md text-white ${
-                          order.status === "Shipped"
+                          order?.status === "Shipped"
                             ? "bg-[#007bff]"
                             : order.status === "Pending"
                             ? "bg-[#FFA500]"
@@ -251,13 +228,13 @@ const Order = () => {
                             : "bg-red-500"
                         }`}
                       >
-                        {order.status}
+                        {order?.status}
                       </span>
                     </td>
                     <td className="py-3 px-4">
                       <button
                         className=" p-1 rounded-md text-red-900 hover:bg-red-500 cursor-pointer"
-                        onClick={() => handleDelete(order._id)}
+                        onClick={() => handleDelete(order?._id)}
                       >
                         <Trash size={18} />
                       </button>
