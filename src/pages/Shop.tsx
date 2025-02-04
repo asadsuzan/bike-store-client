@@ -110,7 +110,9 @@ const Shop = () => {
 
             <p
               className="prose max-w-none"
-              dangerouslySetInnerHTML={{ __html: product.description }}
+              dangerouslySetInnerHTML={{
+                __html: product.description.slice(0, 100),
+              }}
             />
             <p>Price: ${product.price}</p>
             <p>In Stock: {product.inStock ? "Yes" : "No"}</p>

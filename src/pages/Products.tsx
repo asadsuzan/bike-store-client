@@ -1,9 +1,13 @@
 import clsx from "clsx";
-import { useGetProductsQuery } from "../redux/features/products/productsApi";
+import {
+  useDeleteProductMutation,
+  useGetProductsQuery,
+} from "../redux/features/products/productsApi";
 import { CircleX, Edit, Eye, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { IProduct } from "./Shop";
 import { useNavigate } from "react-router";
+import { toast } from "sonner";
 
 const Products = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -11,7 +15,7 @@ const Products = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const navigate = useNavigate();
-
+  const [deleteProduct] = useDeleteProductMutation();
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
@@ -24,7 +28,7 @@ const Products = () => {
     setDebouncedSearchTerm("");
     setCurrentPage(1);
   };
-  const { isLoading, data } = useGetProductsQuery(
+  const { isLoading, data, refetch } = useGetProductsQuery(
     {
       page: currentPage,
       limit: 10,
@@ -58,6 +62,21 @@ const Products = () => {
 
   const handleNext = () => {
     if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
+  };
+  const handleDeleteProduct = async (productId: string) => {
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      const toastId = toast.loading("Please wait...");
+
+      const res = await deleteProduct(productId);
+      if (res.data) {
+        toast.success("Product deleted successfully", { id: toastId });
+        // Refetch products with the updated status
+        refetch();
+        setCurrentPage(currentPage); // Refresh the current page when product is deleted
+      } else {
+        toast.error("Error deleting product", { id: toastId });
+      }
+    }
   };
   return (
     <div className="bg-gray-50 p-6">
@@ -132,7 +151,10 @@ const Products = () => {
                 </td>
                 <td
                   className="py-3 px-4 hover:bg-gray-100"
-                  dangerouslySetInnerHTML={{ __html: product?.description }}
+                  dangerouslySetInnerHTML={{
+                    __html: product?.description.slice(0, 20),
+                    // Limit the description to 20 characters for display
+                  }}
                 >
                   {/* {product.description} */}
                 </td>
@@ -151,7 +173,10 @@ const Products = () => {
                   >
                     <Edit className="w-5 h-5 text-gray-600" />
                   </button>
-                  <button className="p-1 rounded-md text-blue-900 hover:bg-blue-500 cursor-pointer">
+                  <button
+                    onClick={() => handleDeleteProduct(product._id)}
+                    className="p-1 rounded-md text-blue-900 hover:bg-blue-500 cursor-pointer"
+                  >
                     <Trash2 className="w-5 h-5 text-red-600" />{" "}
                   </button>
                 </td>
