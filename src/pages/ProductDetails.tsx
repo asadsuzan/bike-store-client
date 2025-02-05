@@ -6,12 +6,13 @@ import { IProduct } from "./Shop";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { addToCart, ICartItem } from "../redux/features/cart/cartSlice";
 import { toast } from "sonner";
+import ProductDetailsSkeleton from "../components/layout/ProductDetailsSkeleton";
 
 const ProductDetails = () => {
   const [isDescriptionOpen, setDescriptionOpen] = useState(false);
   const [isReturnsOpen, setReturnsOpen] = useState(false);
   const { id } = useParams();
-  const { isLoading, data } = useGetProductByIdQuery(id, {
+  const { isLoading, data, isFetching } = useGetProductByIdQuery(id, {
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true,
   });
@@ -21,8 +22,12 @@ const ProductDetails = () => {
   const cart = useAppSelector((state) => state.cart);
   const navigate = useNavigate();
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading || isFetching) return <ProductDetailsSkeleton />;
   const product = (data?.data as IProduct) || {};
+  if (!product?._id) {
+    navigate("/404", { replace: true });
+    return null;
+  }
   const isCartItem = cart.items.find(
     (item: ICartItem) => product._id === item.product
   );
@@ -58,14 +63,14 @@ const ProductDetails = () => {
 
     setProcessing(false);
   };
-  console.log(product);
+
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left Image Section */}
         <div className="w-full">
           <img
-            src={product.image}
+            src={`https://placehold.co/600x600?text=${product?.name}`}
             alt="Product Image"
             className="w-full rounded-lg shadow-md"
           />

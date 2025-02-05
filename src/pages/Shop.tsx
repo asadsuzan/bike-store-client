@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useGetProductsQuery } from "../redux/features/products/productsApi";
 import { CircleX } from "lucide-react";
-import { useNavigate } from "react-router";
+
 import { productCategories } from "../constants/product";
+
+import ProductCard from "../components/Shared/ProductCard";
+import NoDataFound from "../components/Shared/NoDataFound";
 
 export interface IProduct {
   _id: string;
@@ -16,6 +19,7 @@ export interface IProduct {
   image?: string;
   createdAt: string;
   updatedAt: string;
+  isLoading?: boolean;
 }
 
 const Shop = () => {
@@ -25,7 +29,7 @@ const Shop = () => {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("200000000000");
   const [inputPage, setInputPage] = useState<string>("");
-  const navigate = useNavigate();
+
   const [category, setCategory] = useState("");
 
   useEffect(() => {
@@ -38,7 +42,7 @@ const Shop = () => {
 
   const limit = 5;
 
-  const { isLoading, data } = useGetProductsQuery(
+  const { isLoading, data, isFetching } = useGetProductsQuery(
     {
       page: currentPage,
       limit,
@@ -49,10 +53,10 @@ const Shop = () => {
     },
     {
       refetchOnMountOrArgChange: true,
+      refetchOnFocus: true,
+      refetchOnReconnect: true,
     }
   );
-
-  if (isLoading) return <div>Loading...</div>;
 
   const products: IProduct[] = data?.data || [];
   const totalPages = data?.meta?.totalPages || 0;
@@ -87,15 +91,15 @@ const Shop = () => {
   };
 
   return (
-    <div>
-      <div className="flex gap-5 justify-between">
-        <div className="relative mb-4 flex-1">
+    <div className="p-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="relative">
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search by product name"
-            className="w-full px-4 py-2 rounded border pr-10"
+            className="w-full px-4 py-2 rounded focus:outline-none border-[#006400] bg-[#e0f7e0] focus:ring-2 focus:ring-[#006400] shadow-sm pr-10"
           />
           {searchTerm && (
             <span
@@ -106,26 +110,28 @@ const Shop = () => {
             </span>
           )}
         </div>
-        <div className="flex gap-2 mb-4">
+
+        <div className="flex gap-2">
           <input
             type="number"
-            placeholder="min price"
+            placeholder="Min Price"
             onChange={(e) => setMinPrice(e.target.value)}
-            className="w-20 px-4  rounded border "
+            className="w-full px-4 py-2 rounded border-[#006400] bg-[#e0f7e0] focus:ring-2 focus:ring-[#004d00] shadow-sm"
           />
           <input
             type="number"
-            placeholder="max price"
+            placeholder="Max Price"
             onChange={(e) => setMaxPrice(e.target.value)}
-            className="w-20 px-4 rounded border "
+            className="w-full px-4 py-2 rounded border-[#006400] bg-[#e0f7e0] focus:ring-2 focus:ring-[#004d00] shadow-sm"
           />
         </div>
-        <div className="">
+
+        <div>
           <select
             id="sort-by-category"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="w-full px-4 py-2 rounded border"
+            className="w-full px-4 py-2 rounded border-[#006400] bg-[#e0f7e0] focus:ring-2 focus:ring-[#004d00] shadow-sm"
           >
             {productCategories?.map((item) => (
               <option key={item} value={item === "All" ? "" : item}>
@@ -135,63 +141,82 @@ const Shop = () => {
           </select>
         </div>
       </div>
-      <div className="grid grid-cols-4 gap-4">
-        {products?.map((product) => (
-          <div
-            key={product?._id}
-            onClick={() => navigate(`/product/${product?._id}`)}
-            className="cursor-pointer"
-          >
-            <img src={product?.image} alt={product?.name} />
-            <h2>{product?.name}</h2>
-
-            <p
-              className="prose max-w-none"
-              dangerouslySetInnerHTML={{
-                __html: product?.description?.slice(0, 100) || "",
+      {isLoading || isFetching ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {[...Array(5)].map((_, idx) => (
+            <ProductCard
+              key={idx}
+              product={{
+                _id: "",
+                brand: "",
+                category: "",
+                name: "",
+                price: 0,
+                description: "",
+                inStock: false,
+                quantity: 0,
+                image: "",
+                createdAt: "",
+                updatedAt: "",
+                isLoading: true,
               }}
+              isLoading={true}
             />
-            <p>Price: ${product?.price}</p>
-            <p>In Stock: {product?.inStock ? "Yes" : "No"}</p>
-          </div>
-        ))}
-      </div>
-      {!products?.length && <div>No Products</div>}
+          ))}
+        </div>
+      ) : products?.length === 0 ? (
+        <NoDataFound />
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {products?.map((product) => (
+            <ProductCard
+              key={product._id}
+              product={product}
+              isLoading={isLoading}
+            />
+          ))}
+        </div>
+      )}
 
-      <div className="flex justify-center mt-4">
+      <div className="flex justify-center mt-4 flex-wrap gap-4 sm:gap-2">
+        {/* Previous Button */}
         <button
           onClick={handlePrevious}
           disabled={currentPage === 1}
-          className={`px-4 py-2 mr-2 rounded ${
+          className={`px-6 py-2 rounded ${
             currentPage === 1
               ? "bg-gray-300 cursor-not-allowed"
-              : "bg-blue-500 text-white"
+              : "bg-green-500 text-white hover:bg-green-600"
           }`}
         >
           Previous
         </button>
 
-        <span className="px-4 py-2">
+        {/* Page Info */}
+        <span className="text-sm sm:text-base px-4 py-2 text-center">
           Page {currentPage} of {totalPages}
         </span>
 
+        {/* Next Button */}
         <button
           onClick={handleNext}
           disabled={currentPage === totalPages}
-          className={`px-4 py-2 ml-2 rounded ${
+          className={`px-6 py-2 rounded ${
             currentPage === totalPages
               ? "bg-gray-300 cursor-not-allowed"
-              : "bg-blue-500 text-white"
+              : "bg-green-500 text-white hover:bg-green-600"
           }`}
         >
           Next
         </button>
 
-        <div className="ml-4 flex items-center gap-2">
+        {/* Dropdown and Page Input */}
+        <div className="flex flex-wrap gap-2 items-center justify-center mt-2 sm:mt-0">
+          {/* Page Dropdown */}
           <select
             value={currentPage}
             onChange={handleDropdownChange}
-            className="border px-2 py-1 rounded"
+            className="border px-4 py-2 rounded bg-[#e0f7e0] focus:outline-0  shadow-sm text-sm sm:text-base"
           >
             {Array.from({ length: totalPages }, (_, index) => (
               <option key={index + 1} value={index + 1}>
@@ -200,21 +225,24 @@ const Shop = () => {
             ))}
           </select>
 
-          <input
-            type="number"
-            min="1"
-            max={totalPages}
-            value={inputPage}
-            onChange={(e) => setInputPage(e.target.value)}
-            placeholder="Page"
-            className="w-16 px-2 py-1 border rounded"
-          />
-          <button
-            onClick={handleJumpToPage}
-            className="px-4 py-2 bg-blue-500 text-white rounded"
-          >
-            Go
-          </button>
+          {/* Page Input */}
+          <div className="flex items-center gap-2">
+            <input
+              type="number"
+              min="1"
+              max={totalPages}
+              value={inputPage}
+              onChange={(e) => setInputPage(e.target.value)}
+              placeholder="Page"
+              className="w-16 sm:w-24 px-4 py-2 border rounded bg-[#e0f7e0]   shadow-sm text-sm sm:text-base"
+            />
+            <button
+              onClick={handleJumpToPage}
+              className="px-6 py-2 bg-green-500 text-white rounded focus:outline-0  hover:bg-green-600 text-sm sm:text-base"
+            >
+              Go
+            </button>
+          </div>
         </div>
       </div>
     </div>

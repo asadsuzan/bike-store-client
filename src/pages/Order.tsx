@@ -1,46 +1,63 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import React from "react";
 import { Link } from "react-router";
 import {
   useDeleteOrderMutation,
   useGetOrdersQuery,
   useGetOrderSummaryQuery,
 } from "../redux/features/order/orderApi";
-import { X, Trash } from "lucide-react";
-import {
-  Key,
-  ReactElement,
-  ReactNode,
-  JSXElementConstructor,
-  useState,
-} from "react";
+import { X, Trash, History } from "lucide-react";
+import { useState } from "react";
 import clsx from "clsx";
 import { toast } from "sonner";
+import NoDataFound from "../components/Shared/NoDataFound";
+
+type OrderItem = {
+  productId: {
+    _id: string;
+    name: string;
+  };
+  quantity: number;
+};
+
+type Order = {
+  transaction: {
+    id: string;
+    date_time: string;
+  };
+  items: OrderItem[];
+  totalPrice: number;
+  status: string;
+  _id: string;
+};
 
 const Order = () => {
   const [statusFilter, setStatusFilter] = useState("");
   const [deleteOrder] = useDeleteOrderMutation();
 
-  const { isLoading, data, refetch } = useGetOrdersQuery(
-    { status: statusFilter }, // Pass status filter here
+  const { isLoading, data, refetch, isFetching } = useGetOrdersQuery(
+    { status: statusFilter },
     {
       refetchOnFocus: true,
       refetchOnMountOrArgChange: true,
     }
   );
 
-  const { isLoading: summaryLoading, data: oderSummary } =
-    useGetOrderSummaryQuery(undefined, {
-      refetchOnFocus: true,
-      refetchOnMountOrArgChange: true,
-    });
+  const {
+    isLoading: summaryLoading,
+    data: oderSummary,
+    isFetching: isSummaryDataFetching,
+  } = useGetOrderSummaryQuery(undefined, {
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true,
+  });
 
-  const handleDelete = async (oderId: string) => {
-    const id = toast.loading("please wait...");
+  const handleDelete = async (orderId: string) => {
+    const id = toast.loading("Deleting order...");
     try {
-      const response: any = await deleteOrder(oderId);
+      const response: any = await deleteOrder(orderId);
       if (response?.data?.data) {
         toast.success("Order deleted successfully", { id });
-        // Refetch orders with the updated status
         refetch();
       }
     } catch (err) {
@@ -49,87 +66,78 @@ const Order = () => {
     }
   };
 
-  if (isLoading || summaryLoading) return <div>Loading...</div>;
+  const renderSkeleton = (count: number) => (
+    <div className="animate-pulse">
+      {Array.from({ length: count }).map((_, index) => (
+        <div key={index} className="h-6 my-2 bg-gray-300 rounded-md "></div>
+      ))}
+    </div>
+  );
 
   return (
-    <div className=" bg-gray-50 p-6">
-      <h1 className="text-2xl font-bold mb-4">Order History</h1>
+    <div className="bg-gray-50 p-6">
+      <h1 className="text-2xl font-bold text-[#00283a] mb-4 flex items-center">
+        <History className="mr-2" /> Order History
+      </h1>
 
-      {data?.length === 0 ? (
-        <p>No orders found.</p>
+      {summaryLoading || isSummaryDataFetching ? (
+        <div>{renderSkeleton(5)}</div>
+      ) : (
+        oderSummary?.success && (
+          <div className="flex gap-5 my-3 overflow-x-auto">
+            {[
+              {
+                label: "All Order",
+                status: "",
+                count: oderSummary?.data?.summary?.allOrders,
+              },
+              {
+                label: "Pending",
+                status: "pending",
+                count: oderSummary?.data?.summary?.pending,
+              },
+              {
+                label: "Paid",
+                status: "paid",
+                count: oderSummary?.data?.summary?.paid,
+              },
+              {
+                label: "Cancelled",
+                status: "cancelled",
+                count: oderSummary?.data?.summary?.cancelled,
+              },
+              {
+                label: "Completed",
+                status: "completed",
+                count: oderSummary?.data?.summary?.completed,
+              },
+              {
+                label: "Shipped",
+                status: "shipped",
+                count: oderSummary?.data?.summary?.shipped,
+              },
+            ].map(({ label, status, count }) => (
+              <p
+                key={status}
+                className={clsx(
+                  "text-sm font-bold cursor-pointer",
+                  statusFilter === status ? "text-green-500" : "text-gray-700"
+                )}
+                onClick={() => setStatusFilter(status)}
+              >
+                {label} ({count})
+              </p>
+            ))}
+          </div>
+        )
+      )}
+
+      {isLoading || isFetching ? (
+        <div className="mt-4">{renderSkeleton(10)}</div>
+      ) : data?.data?.orders?.length === 0 ? (
+        <NoDataFound />
       ) : (
         <div className="overflow-x-auto">
-          {/* oder summary  */}
-
-          <div>
-            {oderSummary?.success && (
-              <div className="flex gap-5 my-3 overflow-x-auto">
-                <p
-                  className={clsx(
-                    "text-sm font-bold cursor-pointer",
-                    statusFilter === "" ? "text-green-500" : "text-gray-700"
-                  )}
-                  onClick={() => setStatusFilter("")}
-                >
-                  All Order ({oderSummary?.data?.summary?.allOrders})
-                </p>
-                <p
-                  className={clsx(
-                    "text-sm font-bold cursor-pointer",
-                    statusFilter === "pending"
-                      ? "text-green-500"
-                      : "text-gray-700"
-                  )}
-                  onClick={() => setStatusFilter("pending")}
-                >
-                  Pending ({oderSummary?.data?.summary?.pending})
-                </p>
-                <p
-                  className={clsx(
-                    "text-sm font-bold cursor-pointer",
-                    statusFilter === "paid" ? "text-green-500" : "text-gray-700"
-                  )}
-                  onClick={() => setStatusFilter("paid")}
-                >
-                  Paid ({oderSummary?.data?.summary?.paid})
-                </p>
-                <p
-                  className={clsx(
-                    "text-sm font-bold cursor-pointer",
-                    statusFilter === "cancelled"
-                      ? "text-green-500"
-                      : "text-gray-700"
-                  )}
-                  onClick={() => setStatusFilter("cancelled")}
-                >
-                  Cancelled ({oderSummary?.data?.summary?.cancelled})
-                </p>
-                <p
-                  className={clsx(
-                    "text-sm font-bold cursor-pointer",
-                    statusFilter === "completed"
-                      ? "text-green-500"
-                      : "text-gray-700"
-                  )}
-                  onClick={() => setStatusFilter("completed")}
-                >
-                  Completed ({oderSummary?.data?.summary?.completed})
-                </p>
-                <p
-                  className={clsx(
-                    "text-sm font-bold cursor-pointer",
-                    statusFilter === "shipped"
-                      ? "text-green-500"
-                      : "text-gray-700"
-                  )}
-                  onClick={() => setStatusFilter("shipped")}
-                >
-                  Shipped ({oderSummary?.data?.summary?.shipped})
-                </p>
-              </div>
-            )}
-          </div>
-
           <table className="w-full bg-white text-sm md:text-base rounded-lg shadow-md">
             <thead className="bg-gray-200 text-left">
               <tr>
@@ -143,105 +151,71 @@ const Order = () => {
               </tr>
             </thead>
             <tbody>
-              {data?.data?.orders.map(
-                (order: {
-                  transaction: {
-                    id:
-                      | boolean
-                      | ReactElement<any, string | JSXElementConstructor<any>>
-                      | Iterable<ReactNode>
-                      | Key
-                      | null
-                      | undefined;
-                    date_time: string | number | Date;
-                  };
-                  items: any[];
-                  totalPrice: number;
-                  _id: string;
-                  status:
-                    | string
-                    | number
-                    | boolean
-                    | ReactElement<any, string | JSXElementConstructor<any>>
-                    | Iterable<ReactNode>
-                    | null
-                    | undefined;
-                }) => (
-                  <tr
-                    key={order?.transaction?.id?.toString() || undefined}
-                    className="border-b hover:bg-gray-100"
-                  >
-                    <td className="py-3 px-4 text-blue-600 underline">
-                      <Link
-                        to={`/order/verify-order?order_id=${order?.transaction?.id}`}
+              {data?.data?.orders.map((order: Order) => (
+                <tr
+                  key={order?.transaction?.id?.toString()}
+                  className="border-b hover:bg-gray-100"
+                >
+                  <td className="py-3 px-4 text-blue-600 underline">
+                    <Link
+                      to={`/order/verify-order?order_id=${order?.transaction?.id}`}
+                    >
+                      #{order?.transaction?.id?.toString()}
+                    </Link>
+                  </td>
+                  <td className="py-3 px-4">
+                    {order?.items?.map((item: OrderItem) => (
+                      <div
+                        key={item?.productId?._id}
+                        className="flex items-center gap-2"
                       >
-                        #{order?.transaction?.id?.toString()}
-                      </Link>
-                    </td>
-                    <td className="py-3 px-4">
-                      {order?.items?.map(
-                        (item: {
-                          productId: {
-                            _id: Key | null | undefined;
-                            name: string | undefined;
-                          };
-                          quantity: number | undefined;
-                        }) => (
-                          <div
-                            key={item?.productId?._id}
-                            className="flex items-center gap-2"
-                          >
-                            <Link
-                              to={`/product/${item?.productId?._id}`}
-                              className="underline text-blue-500"
-                            >
-                              {item?.productId?.name}
-                            </Link>
-                            <X size={15} className="text-red-500" />
-                            <span className="text-[#00a86b] font-semibold">
-                              {item?.quantity}
-                            </span>
-                          </div>
-                        )
-                      )}
-                    </td>
-                    <td className="py-3 px-4">{order?.items?.length}</td>
-                    <td className="py-3 px-4">
-                      ${order?.totalPrice?.toFixed(2)}
-                    </td>
-                    <td className="py-3 px-4">
-                      {new Date(
-                        order?.transaction?.date_time
-                      )?.toLocaleString()}
-                    </td>
-                    <td className="py-3 px-4">
-                      <span
-                        className={`px-3 py-1 rounded-md text-white ${
-                          order?.status === "Shipped"
-                            ? "bg-[#007bff]"
-                            : order.status === "Pending"
-                            ? "bg-[#FFA500]"
-                            : order.status === "Paid"
-                            ? "bg-[#28a745]"
-                            : order.status === "Completed"
-                            ? "bg-[#6c757d]"
-                            : "bg-red-500"
-                        }`}
-                      >
-                        {order?.status}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4">
-                      <button
-                        className=" p-1 rounded-md text-red-900 hover:bg-red-500 cursor-pointer"
-                        onClick={() => handleDelete(order?._id)}
-                      >
-                        <Trash size={18} />
-                      </button>
-                    </td>
-                  </tr>
-                )
-              )}
+                        <Link
+                          to={`/product/${item?.productId?._id}`}
+                          className="underline text-blue-500"
+                        >
+                          {item?.productId?.name}
+                        </Link>
+                        <X size={15} className="text-red-500" />
+                        <span className="text-[#00a86b] font-semibold">
+                          {item?.quantity}
+                        </span>
+                      </div>
+                    ))}
+                  </td>
+                  <td className="py-3 px-4">{order?.items?.length}</td>
+                  <td className="py-3 px-4">
+                    ${order?.totalPrice?.toFixed(2)}
+                  </td>
+                  <td className="py-3 px-4">
+                    {new Date(order?.transaction?.date_time)?.toLocaleString()}
+                  </td>
+                  <td className="py-3 px-4">
+                    <span
+                      className={`px-3 py-1 rounded-md text-white ${
+                        order?.status === "Shipped"
+                          ? "bg-[#007bff]"
+                          : order.status === "Pending"
+                          ? "bg-[#FFA500]"
+                          : order.status === "Paid"
+                          ? "bg-[#28a745]"
+                          : order.status === "Completed"
+                          ? "bg-[#6c757d]"
+                          : "bg-red-500"
+                      }`}
+                    >
+                      {order?.status}
+                    </span>
+                  </td>
+                  <td className="py-3 px-4">
+                    <button
+                      className="p-1 rounded-md text-red-900 hover:bg-red-500 cursor-pointer"
+                      onClick={() => handleDelete(order?._id)}
+                    >
+                      <Trash size={18} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
