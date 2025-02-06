@@ -19,7 +19,6 @@ const DashboardNavigation = () => {
   } else {
     navItems = adminRoutes;
   }
-  console.log(location);
   return (
     <nav className="flex items-center mb-2">
       <ul className="flex gap-4">

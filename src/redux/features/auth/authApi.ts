@@ -9,7 +9,13 @@ const authApi = baseApi.injectEndpoints({
         body: userInfo,
       }),
     }),
+    getCustomerCount: builder.query({
+      query: () => ({
+        url: "/user/count",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation } = authApi;
+export const { useLoginMutation, useGetCustomerCountQuery } = authApi;

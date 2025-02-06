@@ -23,6 +23,8 @@ import Products from "./pages/Products.tsx";
 import Profile from "./pages/Profile.tsx";
 import AdminLayout from "./components/layout/AdminLaout.tsx";
 import EditProduct from "./pages/EditProduct.tsx";
+import AdminDashboard from "./pages/AdminDashboard.tsx";
+import UserDashboard from "./pages/UserDashboard.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -40,12 +42,14 @@ createRoot(document.getElementById("root")!).render(
             </Route>
             <Route element={<AuthLayout />}>
               <Route element={<Dashboard />}>
+                <Route path="/user/dashboard" element={<UserDashboard />} />
                 <Route path="dashboard/orders" element={<Order />} />
                 <Route element={<AdminLayout />}>
                   <Route
-                    path="dashboard/insert-product"
+                    path="/dashboard/insert-product"
                     element={<InsertProducts />}
                   />
+                  <Route path="/admin/dashboard" element={<AdminDashboard />} />
                   <Route
                     path="dashboard/edit-product/:id"
                     element={<EditProduct />}

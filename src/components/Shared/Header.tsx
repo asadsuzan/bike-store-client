@@ -109,7 +109,14 @@ const Header: React.FC = () => {
               {user ? (
                 <>
                   <li className="px-4 py-2 hover:bg-gray-100 transition-colors duration-300">
-                    <Link to="/dashboard/orders" className="block">
+                    <Link
+                      to={
+                        user?.role === "admin"
+                          ? `/admin/dashboard`
+                          : `/user/dashboard`
+                      }
+                      className="block"
+                    >
                       Dashboard
                     </Link>
                   </li>
@@ -207,14 +214,14 @@ const Header: React.FC = () => {
                 className="flex items-center space-x-2 cursor-pointer hover:text-[#00ff00] transition-colors duration-300"
               >
                 <User size={20} />
-                <span>User</span>
+                <span>My Account</span>
               </div>
               {isDropdownOpen && (
                 <ul className="absolute right-0 mt-2 w-48 bg-white border border-[#00ff00] rounded-md shadow-lg z-10">
                   {user ? (
                     <>
                       <li className="px-4 py-2 hover:bg-gray-100 transition-colors duration-300">
-                        <Link to="/dashboard/orders" className="block">
+                        <Link to="/dashboard" className="block">
                           Dashboard
                         </Link>
                       </li>

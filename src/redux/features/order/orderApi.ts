@@ -71,6 +71,24 @@ const orderApi = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
+    getOderRevenue: builder.query({
+      query: () => ({
+        url: "/order/revenue",
+        method: "GET",
+      }),
+    }),
+    getSellsOverview: builder.query({
+      query: () => ({
+        url: "/order/sells-overview",
+        method: "GET",
+      }),
+    }),
+    getRecentOrders: builder.query({
+      query: () => ({
+        url: "/order/recent-orders",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -80,4 +98,7 @@ export const {
   useGetOrdersQuery,
   useGetOrderSummaryQuery,
   useDeleteOrderMutation,
+  useGetOderRevenueQuery,
+  useGetSellsOverviewQuery,
+  useGetRecentOrdersQuery,
 } = orderApi;
