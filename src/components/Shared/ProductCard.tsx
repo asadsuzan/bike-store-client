@@ -9,7 +9,7 @@ interface ProductCardProps {
 
 const ProductCard = ({ product, isLoading }: ProductCardProps) => {
   const navigate = useNavigate();
-  console.log(isLoading);
+
   if (isLoading) {
     return (
       <div className="cursor-pointer bg-white p-4 rounded shadow-md hover:shadow-lg transition-shadow animate-pulse">

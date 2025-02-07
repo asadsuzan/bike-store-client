@@ -54,6 +54,7 @@ const ProductDetails = () => {
         name: product.name,
         price: product.price,
         availableQuantity: product.quantity,
+        imageUrl: product.image, // Optional: for displaying in the UI
       })
     );
     toast.success("Added to cart", {

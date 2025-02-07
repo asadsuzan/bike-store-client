@@ -14,7 +14,9 @@ const AuthLayout = () => {
     <main>
       <div className="container mx-auto">
         <Header />
-        <Outlet />
+       <div className="pt-[85px]">
+       <Outlet />
+       </div>
       </div>
     </main>
   );
