@@ -9,10 +9,8 @@ import { Link, useLocation, useNavigate } from "react-router";
 import AuthForm from "../components/form/AuthForm";
 import { ArrowRight } from "lucide-react";
 
-const Login = () => {
-  // const { register, handleSubmit } = useForm({
-  //   defaultValues: { email: "admin@gmail.com", password: "adminadmin" },
-  // });
+const Registration = () => {
+
   const [login] = useLoginMutation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -46,14 +44,10 @@ const Login = () => {
   };
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
-     
-    <AuthForm isLogin={true} onSubmit={onSubmit} />
-   
+    <AuthForm isLogin={false} onSubmit={onSubmit} />
     <Link to={'/shop'} className="my-2 flex justify-center items-center gap-2 text-green-400 hover:text-green-700">Continue Shopping <ArrowRight size={15} color="green" className="mt-1"/> </Link>
-   
- 
   </div>
   );
 };
 
-export default Login;
+export default Registration;

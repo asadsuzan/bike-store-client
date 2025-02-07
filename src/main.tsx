@@ -24,6 +24,7 @@ import Profile from "./pages/Profile.tsx";
 import AdminLayout from "./components/layout/AdminLaout.tsx";
 import EditProduct from "./pages/EditProduct.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
+import Registration from "./pages/Registration.tsx";
 // import UserDashboard from "./pages/UserDashboard.tsx";
 
 createRoot(document.getElementById("root")!).render(
@@ -35,7 +36,7 @@ createRoot(document.getElementById("root")!).render(
             <Route element={<OpenLayout />}>
               <Route index element={<App />} />
               <Route path="/cart" element={<Cart />} />
-              <Route path="/login" element={<Login />} />
+      
               <Route path="/shop" element={<Shop />} />
               <Route path="/product/:id" element={<ProductDetails />} />
               <Route path="/about" element={<About />} />
@@ -62,6 +63,8 @@ createRoot(document.getElementById("root")!).render(
             <Route element={<AuthenticateLayoutWithoutHeader />}>
               <Route path="/order/verify-order" element={<VerifyOrder />} />
             </Route>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Registration />} />
           </Routes>
         </BrowserRouter>
         <Toaster />
