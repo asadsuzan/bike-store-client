@@ -3,7 +3,7 @@ import { Trash, X } from "lucide-react";
 
 import { Link } from "react-router";
 import NoDataFound from "./NoDataFound";
-import { useUpdateOrderStatusMutation } from "../../redux/features/order/orderApi";
+import { useDeleteOrderMutation, useUpdateOrderStatusMutation } from "../../redux/features/order/orderApi";
 import { toast } from "sonner";
 
 interface Order {
@@ -25,7 +25,7 @@ interface Order {
 
 interface OrderTableProps {
   orderDta: Order[];
-  handleDelete: (id: string) => void;
+
   role: "admin" | "customer";
 }
 const getStatusColorClass = (status: string) => {
@@ -47,10 +47,10 @@ const getStatusColorClass = (status: string) => {
 
 const OrderTable: React.FC<OrderTableProps> = ({
   orderDta,
-  handleDelete,
   role,
 }) => {
   const [updateOrderStatus] = useUpdateOrderStatusMutation();
+  const [deleteOrder] = useDeleteOrderMutation();
 
   const handleStatusChange = async (orderId: string, newStatus: string) => {
     const toastId = toast.loading("Please wait...");
@@ -63,12 +63,26 @@ const OrderTable: React.FC<OrderTableProps> = ({
         toast.success("Order status updated successfully", {
           id: toastId,
         });
+  
       }
     } catch (err: any) {
       const message = err?.data?.message;
       toast.error(message || `Failed to update status`, {
         id: toastId,
       });
+    }
+  };
+  const handleDelete = async (orderId: string) => {
+    const id = toast.loading("Deleting order...");
+    try {
+      const response: any = await deleteOrder(orderId);
+      if (response?.data?.data) {
+        toast.success("Order deleted successfully", { id });
+     
+      }
+    } catch (err) {
+      console.error("Error deleting order:", err);
+      toast.error("Error deleting order", { id });
     }
   };
 

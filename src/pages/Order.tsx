@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
+
 
 import {
-  useDeleteOrderMutation,
+ 
   useGetOrdersQuery,
   useGetOrderSummaryQuery,
 } from "../redux/features/order/orderApi";
 import { History } from "lucide-react";
 import { useState } from "react";
 import clsx from "clsx";
-import { toast } from "sonner";
+
 import NoDataFound from "../components/Shared/NoDataFound";
 import OrderTable from "../components/Shared/OrderTable";
 
@@ -37,12 +37,12 @@ type Order = {
 
 const Order = () => {
   const [statusFilter, setStatusFilter] = useState("");
-  const [deleteOrder] = useDeleteOrderMutation();
+ 
   const user = useAppSelector(useCurrentUser)
   const role = user?.role as 'admin' |"customer"
 
 
-  const { isLoading, data, refetch, isFetching } = useGetOrdersQuery(
+  const { isLoading, data,  isFetching } = useGetOrdersQuery(
     { status: statusFilter },
     {
       refetchOnFocus: true,
@@ -59,19 +59,7 @@ const Order = () => {
     refetchOnMountOrArgChange: true,
   });
 
-  const handleDelete = async (orderId: string) => {
-    const id = toast.loading("Deleting order...");
-    try {
-      const response: any = await deleteOrder(orderId);
-      if (response?.data?.data) {
-        toast.success("Order deleted successfully", { id });
-        refetch();
-      }
-    } catch (err) {
-      console.error("Error deleting order:", err);
-      toast.error("Error deleting order", { id });
-    }
-  };
+
 
   const renderSkeleton = (count: number) => (
     <div className="animate-pulse">
@@ -144,7 +132,7 @@ const Order = () => {
       ) : data?.data?.orders?.length === 0 ? (
         <NoDataFound />
       ) : (
-        <OrderTable role={role} orderDta={data?.data?.orders} handleDelete={handleDelete} />
+        <OrderTable role={role} orderDta={data?.data?.orders}  />
       )}
     </div>
   );

@@ -10,18 +10,18 @@ import {
 import { PieChart, Pie, Cell } from "recharts";
 import { ShoppingCart, PackageCheck, Users, DollarSign } from "lucide-react";
 import {
-  useDeleteOrderMutation,
+
   useGetOderRevenueQuery,
   useGetOrderSummaryQuery,
   useGetRecentOrdersQuery,
   useGetSellsOverviewQuery,
 } from "../redux/features/order/orderApi";
 import { useGetCustomerCountQuery } from "../redux/features/auth/authApi";
-import { toast } from "sonner";
+
 import OrderTable from "../components/Shared/OrderTable";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import React from "react";
+
 
 const COLORS = ["#FFBF00", "#4CAF50", "#2196F3", "#8BC34A", "#F44336"];
 
@@ -30,7 +30,7 @@ const AdminDashboard = () => {
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
   });
-  const [deleteOrder] = useDeleteOrderMutation();
+
   const { isLoading: isCustomerCountLoading, data: customerData } =
     useGetCustomerCountQuery("", {
       refetchOnFocus: true,
@@ -49,25 +49,13 @@ const AdminDashboard = () => {
   const {
     isLoading: isRecentOrdersLoading,
     data: recentOrderData,
-    refetch,
+   
   } = useGetRecentOrdersQuery("", {
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
   });
 
-  const handleDelete = async (orderId: string) => {
-    const id = toast.loading("Deleting order...");
-    try {
-      const response: any = await deleteOrder(orderId);
-      if (response?.data?.data) {
-        toast.success("Order deleted successfully", { id });
-        refetch();
-      }
-    } catch (err) {
-      console.error("Error deleting order:", err);
-      toast.error("Error deleting order", { id });
-    }
-  };
+
 
   const recentOrders = recentOrderData?.data?.orders;
   const oderSummary = orderData?.data?.summary || {};
@@ -189,7 +177,7 @@ const AdminDashboard = () => {
         ) : (
           <div>
             <h2 className="text-lg font-semibold mb-4">Recent Orders</h2>
-            <OrderTable orderDta={recentOrders} handleDelete={handleDelete}  role='admin'/>
+            <OrderTable orderDta={recentOrders}   role='admin'/>
           </div>
         )}
       </div>

@@ -2,24 +2,24 @@
 
 import { ShoppingCart, PackageCheck, DollarSign } from "lucide-react";
 import {
-  useDeleteOrderMutation,
+
   useGetOderRevenueQuery,
   useGetOrderSummaryQuery,
   useGetRecentOrdersQuery,
 } from "../redux/features/order/orderApi";
 
-import { toast } from "sonner";
+
 import OrderTable from "../components/Shared/OrderTable";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import React from "react";
+
 
 const UserDashboard = () => {
   const { isLoading, data } = useGetOderRevenueQuery("", {
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
   });
-  const [deleteOrder] = useDeleteOrderMutation();
+
 
   const { isLoading: isOderQueryLoading, data: orderData } =
     useGetOrderSummaryQuery("", {
@@ -30,25 +30,13 @@ const UserDashboard = () => {
   const {
     isLoading: isRecentOrdersLoading,
     data: recentOrderData,
-    refetch,
+
   } = useGetRecentOrdersQuery("", {
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
   });
 
-  const handleDelete = async (orderId: string) => {
-    const id = toast.loading("Deleting order...");
-    try {
-      const response: any = await deleteOrder(orderId);
-      if (response?.data?.data) {
-        toast.success("Order deleted successfully", { id });
-        refetch();
-      }
-    } catch (err) {
-      console.error("Error deleting order:", err);
-      toast.error("Error deleting order", { id });
-    }
-  };
+
 
   const recentOrders = recentOrderData?.data?.orders;
 
@@ -99,7 +87,7 @@ const UserDashboard = () => {
         ) : (
           <div>
             <h2 className="text-lg font-semibold mb-4">Recent Orders</h2>
-            <OrderTable role='customer' orderDta={recentOrders} handleDelete={handleDelete} />
+            <OrderTable role='customer' orderDta={recentOrders}  />
           </div>
         )}
       </div>
