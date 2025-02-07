@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { addToCart, ICartItem } from "../redux/features/cart/cartSlice";
 import { toast } from "sonner";
 import ProductDetailsSkeleton from "../components/layout/ProductDetailsSkeleton";
+import Footer from "../components/Shared/Footer";
 
 const ProductDetails = () => {
   const [isDescriptionOpen, setDescriptionOpen] = useState(false);
@@ -66,7 +67,7 @@ const ProductDetails = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
+    <div className="min-h-screen p-8">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left Image Section */}
         <div className="w-full">
@@ -205,6 +206,10 @@ const ProductDetails = () => {
           </div>
         </div>
       </div>
+     {/* footer  */}
+     <div className="mt-20">
+      <Footer/>
+     </div>
     </div>
   );
 };

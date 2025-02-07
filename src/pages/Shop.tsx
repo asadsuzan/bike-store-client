@@ -4,6 +4,7 @@ import { CircleX } from "lucide-react";
 import { productCategories } from "../constants/product";
 import ProductCard from "../components/Shared/ProductCard";
 import NoDataFound from "../components/Shared/NoDataFound";
+import Footer from "../components/Shared/Footer";
 
 export interface IProduct {
   _id: string;
@@ -88,7 +89,7 @@ const Shop = () => {
   };
 
   return (
-    <div className="p-8 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    <div className="p-8  min-h-screen">
       {/* Header */}
       <h1 className="text-4xl font-bold text-gray-900 mb-8 text-center">
         Explore Our Products
@@ -254,7 +255,15 @@ const Shop = () => {
           </div>
         </div>
       </div>
+
+
+
+
+       {/* footer  */}
+      <div className="mt-6"> <Footer/></div>
     </div>
+
+    
   );
 };
 

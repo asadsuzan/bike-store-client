@@ -13,6 +13,7 @@ import { useCreateOrderMutation } from "../redux/features/order/orderApi";
 import { toast } from "sonner";
 import { useCurrentUser } from "../redux/features/auth/authSlice";
 import CartPageSkeleton from "../components/layout/CartPageSkeleton";
+import Footer from "../components/Shared/Footer";
 
 const CartPage = () => {
   const [couponCode, setCouponCode] = useState("");
@@ -318,8 +319,13 @@ console.log(cart)
               </div>
             </div>
           )}
+
+        
         </div>
+        
       )}
+        {/* // footer  */}
+        <div className="mt-6"><Footer/></div>
     </>
   );
 };
