@@ -25,6 +25,7 @@ import AdminLayout from "./components/layout/AdminLaout.tsx";
 import EditProduct from "./pages/EditProduct.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import Registration from "./pages/Registration.tsx";
+import ScrollToTop from "./components/Shared/ScrollToTop.tsx";
 // import UserDashboard from "./pages/UserDashboard.tsx";
 
 createRoot(document.getElementById("root")!).render(
@@ -32,6 +33,7 @@ createRoot(document.getElementById("root")!).render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <BrowserRouter>
+        <ScrollToTop/>
           <Routes>
             <Route element={<OpenLayout />}>
               <Route index element={<App />} />
