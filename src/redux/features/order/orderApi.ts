@@ -89,6 +89,14 @@ const orderApi = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
+    updateOrderStatus: builder.mutation({
+      query: ({ orderId, status }) => ({
+        url: `/order/status/${orderId}`,
+        method: "PUT",
+        body: { status },
+      }),
+
+    })
   }),
 });
 
@@ -101,4 +109,5 @@ export const {
   useGetOderRevenueQuery,
   useGetSellsOverviewQuery,
   useGetRecentOrdersQuery,
+  useUpdateOrderStatusMutation,
 } = orderApi;

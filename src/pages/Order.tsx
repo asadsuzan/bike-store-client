@@ -13,6 +13,9 @@ import { toast } from "sonner";
 import NoDataFound from "../components/Shared/NoDataFound";
 import OrderTable from "../components/Shared/OrderTable";
 
+import { useCurrentUser } from "../redux/features/auth/authSlice";
+import { useAppSelector } from "../redux/hooks";
+
 type OrderItem = {
   productId: {
     _id: string;
@@ -35,6 +38,9 @@ type Order = {
 const Order = () => {
   const [statusFilter, setStatusFilter] = useState("");
   const [deleteOrder] = useDeleteOrderMutation();
+  const user = useAppSelector(useCurrentUser)
+  const role = user?.role as 'admin' |"customer"
+
 
   const { isLoading, data, refetch, isFetching } = useGetOrdersQuery(
     { status: statusFilter },
@@ -138,7 +144,7 @@ const Order = () => {
       ) : data?.data?.orders?.length === 0 ? (
         <NoDataFound />
       ) : (
-        <OrderTable orderDta={data?.data?.orders} handleDelete={handleDelete} />
+        <OrderTable role={role} orderDta={data?.data?.orders} handleDelete={handleDelete} />
       )}
     </div>
   );

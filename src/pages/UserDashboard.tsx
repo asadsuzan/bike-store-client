@@ -99,7 +99,7 @@ const UserDashboard = () => {
         ) : (
           <div>
             <h2 className="text-lg font-semibold mb-4">Recent Orders</h2>
-            <OrderTable orderDta={recentOrders} handleDelete={handleDelete} />
+            <OrderTable role='customer' orderDta={recentOrders} handleDelete={handleDelete} />
           </div>
         )}
       </div>

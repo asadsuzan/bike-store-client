@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Trash, X } from "lucide-react";
 
 import { Link } from "react-router";
 import NoDataFound from "./NoDataFound";
+import { useUpdateOrderStatusMutation } from "../../redux/features/order/orderApi";
+import { toast } from "sonner";
 
 interface Order {
   transaction: {
@@ -23,9 +26,52 @@ interface Order {
 interface OrderTableProps {
   orderDta: Order[];
   handleDelete: (id: string) => void;
+  role: "admin" | "customer";
 }
+const getStatusColorClass = (status: string) => {
+  switch (status) {
+    case "Pending":
+      return "bg-[#FFA500] text-white";
+    case "Paid":
+      return "bg-[#28a745] text-white";
+    case "Shipped":
+      return "bg-[#007bff] text-white";
+    case "Completed":
+      return "bg-[#6c757d] text-white";
+    case "Cancelled":
+      return "bg-red-500 text-white";
+    default:
+      return "bg-gray-200";
+  }
+};
 
-const OrderTable: React.FC<OrderTableProps> = ({ orderDta, handleDelete }) => {
+const OrderTable: React.FC<OrderTableProps> = ({
+  orderDta,
+  handleDelete,
+  role,
+}) => {
+  const [updateOrderStatus] = useUpdateOrderStatusMutation();
+
+  const handleStatusChange = async (orderId: string, newStatus: string) => {
+    const toastId = toast.loading("Please wait...");
+    try {
+      const response = await updateOrderStatus({
+        orderId,
+        status: newStatus,
+      }).unwrap();
+      if (response?.success) {
+        toast.success("Order status updated successfully", {
+          id: toastId,
+        });
+      }
+    } catch (err: any) {
+      const message = err?.data?.message;
+      toast.error(message || `Failed to update status`, {
+        id: toastId,
+      });
+    }
+  };
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full bg-white text-sm md:text-base rounded-lg shadow-md">
@@ -77,23 +123,49 @@ const OrderTable: React.FC<OrderTableProps> = ({ orderDta, handleDelete }) => {
               <td className="py-3 px-4">
                 {new Date(order?.transaction?.date_time)?.toLocaleString()}
               </td>
-              <td className="py-3 px-4">
-                <span
-                  className={`px-3 py-1 rounded-md text-white ${
-                    order?.status === "Shipped"
-                      ? "bg-[#007bff]"
-                      : order.status === "Pending"
-                      ? "bg-[#FFA500]"
-                      : order.status === "Paid"
-                      ? "bg-[#28a745]"
-                      : order.status === "Completed"
-                      ? "bg-[#6c757d]"
-                      : "bg-red-500"
-                  }`}
-                >
-                  {order?.status}
-                </span>
-              </td>
+
+              {role === "customer" && (
+                <td className="py-3 px-4">
+                  <span
+                    className={`px-3 py-1 rounded-md text-white  ${getStatusColorClass(
+                      order.status
+                    )}`}
+                  >
+                    {order?.status}
+                  </span>
+                </td>
+              )}
+
+              {role === "admin" && (
+                <td className="py-3 px-4">
+                  <select
+                    value={order.status}
+                    className={`p-2 border rounded-md ${getStatusColorClass(
+                      order.status
+                    )}`}
+                    onChange={(e) =>
+                      handleStatusChange(order._id, e.target.value)
+                    }
+                  >
+                    <option value="Pending" className="text-black">
+                      Pending
+                    </option>
+                    <option value="Paid" className="text-black">
+                      Paid
+                    </option>
+                    <option value="Shipped" className="text-black">
+                      Shipped
+                    </option>
+                    <option value="Completed" className="text-black">
+                      Completed
+                    </option>
+                    <option value="Cancelled" className="text-black">
+                      Cancelled
+                    </option>
+                  </select>
+                </td>
+              )}
+
               <td className="py-3 px-4">
                 <button
                   className="p-1 rounded-md text-red-900 hover:bg-red-500 cursor-pointer"
@@ -109,7 +181,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ orderDta, handleDelete }) => {
 
       {
         // Display a message if no orders found
-        orderDta.length === 0 && <NoDataFound />
+        orderDta?.length === 0 && <NoDataFound />
       }
     </div>
   );

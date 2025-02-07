@@ -89,8 +89,8 @@ const AdminDashboard = () => {
 
   if (isLoadingData) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <Skeleton width={300} height={200} />
+      <div className="flex justify-center items-center min-h-screen">
+        <Skeleton width={100} height={100} />
       </div>
     );
   }
@@ -189,7 +189,7 @@ const AdminDashboard = () => {
         ) : (
           <div>
             <h2 className="text-lg font-semibold mb-4">Recent Orders</h2>
-            <OrderTable orderDta={recentOrders} handleDelete={handleDelete} />
+            <OrderTable orderDta={recentOrders} handleDelete={handleDelete}  role='admin'/>
           </div>
         )}
       </div>
