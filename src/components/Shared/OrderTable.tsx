@@ -59,6 +59,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
         orderId,
         status: newStatus,
       }).unwrap();
+      // console.log(response)
       if (response?.success) {
         toast.success("Order status updated successfully", {
           id: toastId,

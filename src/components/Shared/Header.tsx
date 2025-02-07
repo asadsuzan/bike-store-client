@@ -111,9 +111,7 @@ const Header: React.FC = () => {
                   <li className="px-4 py-2 hover:bg-gray-100 transition-colors duration-300">
                     <Link
                       to={
-                        user?.role === "admin"
-                          ? `/admin/dashboard`
-                          : `/user/dashboard`
+                        '/dashboard'
                       }
                       className="block"
                     >

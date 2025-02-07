@@ -17,14 +17,14 @@ import About from "./pages/About.tsx";
 import ProductDetails from "./pages/ProductDetails.tsx";
 import VerifyOrder from "./pages/VerifyOrder.tsx";
 import AuthenticateLayoutWithoutHeader from "./components/layout/AuthenticateLayoutWithoutHeader.tsx";
-import Dashboard from "./components/layout/Dashboard.tsx";
+import DashboardLayout from "./components/layout/DashboardLayout.tsx";
 import InsertProducts from "./pages/InsertProducts.tsx";
 import Products from "./pages/Products.tsx";
 import Profile from "./pages/Profile.tsx";
 import AdminLayout from "./components/layout/AdminLaout.tsx";
 import EditProduct from "./pages/EditProduct.tsx";
-import AdminDashboard from "./pages/AdminDashboard.tsx";
-import UserDashboard from "./pages/UserDashboard.tsx";
+import Dashboard from "./pages/Dashboard.tsx";
+// import UserDashboard from "./pages/UserDashboard.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -34,33 +34,33 @@ createRoot(document.getElementById("root")!).render(
           <Routes>
             <Route element={<OpenLayout />}>
               <Route index element={<App />} />
-              <Route path="cart" element={<Cart />} />
-              <Route path="login" element={<Login />} />
-              <Route path="shop" element={<Shop />} />
-              <Route path="product/:id" element={<ProductDetails />} />
-              <Route path="about" element={<About />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/shop" element={<Shop />} />
+              <Route path="/product/:id" element={<ProductDetails />} />
+              <Route path="/about" element={<About />} />
             </Route>
             <Route element={<AuthLayout />}>
-              <Route element={<Dashboard />}>
-                <Route path="/user/dashboard" element={<UserDashboard />} />
-                <Route path="dashboard/orders" element={<Order />} />
+              <Route element={<DashboardLayout />}>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/orders" element={<Order />} />
                 <Route element={<AdminLayout />}>
                   <Route
-                    path="/dashboard/insert-product"
+                    path="/insert-product"
                     element={<InsertProducts />}
                   />
-                  <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                
                   <Route
-                    path="dashboard/edit-product/:id"
+                    path="/edit-product/:id"
                     element={<EditProduct />}
                   />
-                  <Route path="dashboard/inventory" element={<Products />} />
+                  <Route path="/inventory" element={<Products />} />
                 </Route>
-                <Route path="dashboard/profile" element={<Profile />} />
+                <Route path="/profile" element={<Profile />} />
               </Route>
             </Route>
             <Route element={<AuthenticateLayoutWithoutHeader />}>
-              <Route path="order/verify-order" element={<VerifyOrder />} />
+              <Route path="/order/verify-order" element={<VerifyOrder />} />
             </Route>
           </Routes>
         </BrowserRouter>

@@ -4,23 +4,23 @@ import { TRoute } from "../../types/routes";
 const adminRoutes: TRoute[] = [
   {
     title: "Dashboard",
-    href: "/admin/dashboard",
+    href: "/dashboard",
     icon: <Database size={20} />,
   },
   {
     title: "Inventory",
-    href: "/dashboard/inventory",
+    href: "/inventory",
     icon: <Box size={20} />,
   },
 
   {
     title: "Insert Product",
-    href: "/dashboard/insert-product",
+    href: "/insert-product",
     icon: <PlusCircle size={20} />,
   },
   {
     title: "Orders",
-    href: "/dashboard/orders",
+    href: "/orders",
     icon: <ShoppingCart size={20} />,
   },
 ];

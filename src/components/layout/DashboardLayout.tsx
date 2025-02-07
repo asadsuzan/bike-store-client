@@ -3,7 +3,7 @@ import { Outlet } from "react-router";
 
 import DashboardNavigation from "../Shared/DashboardNavigation";
 
-const Dashboard = () => {
+const DashboardLayout = () => {
   return (
     <div>
       <DashboardNavigation />
@@ -12,4 +12,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default DashboardLayout;
