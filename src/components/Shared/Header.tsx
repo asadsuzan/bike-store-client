@@ -38,7 +38,12 @@ const Header: React.FC = () => {
 
   // Helper function to determine if the link is active
   const isActive = (path: string) => location.pathname === path;
+const handleLogOut =()=>{
+  
+  dispatch(logout());
 
+
+}
   return (
     <nav className="bg-white fixed left-0 top-0 w-full z-50 h-[80px]">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -108,7 +113,7 @@ const Header: React.FC = () => {
                       </li>
                       <li
                         className="px-4 py-2 hover:bg-green-50 cursor-pointer transition-colors duration-300"
-                        onClick={() => dispatch(logout())}
+                        onClick={handleLogOut}
                       >
                         <span className="block text-gray-700">Logout</span>
                       </li>

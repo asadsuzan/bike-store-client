@@ -1,4 +1,4 @@
-import { ShoppingCart, PlusCircle, Box, Database } from "lucide-react";
+import { ShoppingCart, PlusCircle, Box, Database, User } from "lucide-react";
 import { TRoute } from "../../types/routes";
 
 const adminRoutes: TRoute[] = [
@@ -7,6 +7,7 @@ const adminRoutes: TRoute[] = [
     href: "/dashboard",
     icon: <Database size={20} />,
   },
+  { title: "Profile", href: "/profile", icon: <User size={20} /> },
   {
     title: "Inventory",
     href: "/inventory",
