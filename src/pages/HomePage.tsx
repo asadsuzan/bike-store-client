@@ -13,7 +13,7 @@ import { generateArray } from "../utils";
 
 const HomePage = () => {
   const navigate = useNavigate()
-  const { isLoading, data, isFetching,refetch } = useGetProductsQuery(
+  const { isLoading, data, isFetching } = useGetProductsQuery(
     {
       page: 1,
       limit: 4,

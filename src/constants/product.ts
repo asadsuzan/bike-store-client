@@ -2,7 +2,8 @@ export const productCategories = [
   "Mountain Bikes",
   "Road Bikes",
   "Hybrid Bikes",
-  "Electric Bikes"
+  "Electric Bikes",
+  "All"
 ]
 
 

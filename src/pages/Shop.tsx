@@ -5,6 +5,7 @@ import { productCategories } from "../constants/product";
 import ProductCard from "../components/Shared/ProductCard";
 import NoDataFound from "../components/Shared/NoDataFound";
 import Footer from "../components/Shared/Footer";
+import { useSearchParams } from "react-router";
 
 export interface IProduct {
   _id: string;
@@ -22,13 +23,15 @@ export interface IProduct {
 }
 
 const Shop = () => {
+  const [searchParams,setSearchParams] = useSearchParams();
+  const category_item = searchParams.get("category") || ''
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("200000000000");
   const [inputPage, setInputPage] = useState<string>("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState( category_item);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -81,7 +84,11 @@ const Shop = () => {
   ) => {
     setCurrentPage(parseInt(event.target.value, 10));
   };
+const handleCategoryChange =(value:string)=>{
+  setCategory(value);
+  setSearchParams({ category: value });
 
+}
   const clearSearch = () => {
     setSearchTerm("");
     setDebouncedSearchTerm("");
@@ -137,7 +144,7 @@ const Shop = () => {
           <select
             id="sort-by-category"
             value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            onChange={(e) => handleCategoryChange(e.target.value)}
             className="w-full px-6 py-3 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 shadow-lg bg-white text-gray-700"
           >
             {productCategories?.map((item) => (
