@@ -11,6 +11,10 @@ interface Order {
     id: string;
     date_time: string;
   };
+  user:{
+    _id: string;
+name:string
+  }
   items: {
     productId: {
       _id: string;
@@ -97,6 +101,9 @@ const OrderTable: React.FC<OrderTableProps> = ({
             <th className="py-3 px-4">Quantity</th>
             <th className="py-3 px-4">Total</th>
             <th className="py-3 px-4">Time</th>
+           {
+            role === 'admin' &&  <th className="py-3 px-4">Customer</th>
+           }
             <th className="py-3 px-4">Status</th>
             <th className="py-3 px-4">Actions</th>
           </tr>
@@ -138,6 +145,9 @@ const OrderTable: React.FC<OrderTableProps> = ({
               <td className="py-3 px-4">
                 {new Date(order?.transaction?.date_time)?.toLocaleString()}
               </td>
+              {
+                role === 'admin' &&      <td className="py-3 px-4">{order?.user?.name}</td>
+              }
 
               {role === "customer" && (
                 <td className="py-3 px-4">
