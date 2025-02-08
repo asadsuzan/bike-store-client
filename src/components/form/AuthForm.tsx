@@ -18,6 +18,7 @@ interface AuthFormProps {
         name: "",
         address: "",
         phone: "",
+        city:""
       },
     });
   
@@ -74,6 +75,24 @@ interface AuthFormProps {
               />
               {errors.address && (
                 <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>
+              )}
+            </div>
+          )}
+          {!isLogin && (
+            <div className="mb-4">
+              <label htmlFor="city" className="block text-sm font-medium text-gray-700">
+                City:
+              </label>
+              <input
+                type="text"
+                id="city"
+                {...register("city", {
+                  required: !isLogin && "City is required",
+                })}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              />
+              {errors.city && (
+                <p className="text-red-500 text-sm mt-1">{errors.city.message}</p>
               )}
             </div>
           )}

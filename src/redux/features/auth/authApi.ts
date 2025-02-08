@@ -9,6 +9,13 @@ const authApi = baseApi.injectEndpoints({
         body: userInfo,
       }),
     }),
+    register: builder.mutation({
+      query: (userInfo) => ({
+        url: "/user/register",
+        method: "POST",
+        body: userInfo,
+      }),
+    }),
     getCustomerCount: builder.query({
       query: () => ({
         url: "/user/count",
@@ -18,4 +25,4 @@ const authApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useLoginMutation, useGetCustomerCountQuery } = authApi;
+export const { useLoginMutation, useGetCustomerCountQuery ,useRegisterMutation} = authApi;

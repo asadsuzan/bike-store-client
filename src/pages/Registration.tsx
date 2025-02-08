@@ -1,37 +1,46 @@
 import React from "react";
 import { FieldValues } from "react-hook-form";
-import { useLoginMutation } from "../redux/features/auth/authApi";
-import { setUser, TUser } from "../redux/features/auth/authSlice";
-import { verifyToken } from "../utils/verifyToken";
-import { useAppDispatch } from "../redux/hooks";
+import {  useRegisterMutation } from "../redux/features/auth/authApi";
+
 import { toast } from "sonner";
-import { Link, useLocation, useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import AuthForm from "../components/form/AuthForm";
 import { ArrowRight } from "lucide-react";
 
 const Registration = () => {
 
-  const [login] = useLoginMutation();
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const [register] = useRegisterMutation()
 
-  const from = location.state?.from?.pathname || "/";
+  const navigate = useNavigate();
+
 
   const onSubmit = async (data: FieldValues) => {
     const toastId = toast.loading("Please wait...", {});
 
     try {
-      const res = await login(data).unwrap();
-      const user = verifyToken(res.data.accessToken) as TUser;
-      const token = res.data.accessToken;
-      dispatch(setUser({ user, token }));
-      toast.success("Logged in success", {
+      const res = await register(data).unwrap()
+   if(res?.success){
+    //  setInterval(() => {
+    //   toast.success("Registered success", {
+    //     id: toastId,
+    //   });
+
+    //   navigate('/login')
+    //  }, 2000);
+setTimeout(() => {
+  toast.success("Registered success", {
+    id: toastId,
+  });
+
+  navigate('/login')
+}, 2000);
+   }else{
+     toast.error("Failed to register", {
         id: toastId,
       });
-      // navigate(`/`);
-      // Navigate back to the protected page or home
-      navigate(from, { replace: true });
+  
+   }
+    
     } catch (error) {
       const message =
         (error as { data: { message: string } }).data.message ||
@@ -39,7 +48,7 @@ const Registration = () => {
       toast.error(message, {
         id: toastId,
       });
-      console.error(error);
+    
     }
   };
   return (
