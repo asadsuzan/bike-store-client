@@ -1,9 +1,31 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { ArrowRight } from "lucide-react";
 import Footer from "../components/Shared/Footer";
 import Testimonial from "../components/Shared/Testimonial";
+import ProductCard from "../components/ProductCard";
+import { useGetProductsQuery } from "../redux/features/products/productsApi";
+import { IProduct } from "./Shop";
+import { pdCategoryItems } from "../constants/product";
+import ProductCardSkeleton from "../components/ProductCardSkeleton";
+
+import CategoryCardSkeleton from './../components/skeleton/CategoryCardSkeleton';
+import { generateArray } from "../utils";
 
 const HomePage = () => {
+  const navigate = useNavigate()
+  const { isLoading, data, isFetching,refetch } = useGetProductsQuery(
+    {
+      page: 1,
+      limit: 4,
+     
+    },
+    {
+      refetchOnMountOrArgChange: true,
+      refetchOnFocus: true,
+    }
+  );
+const featuredBikes = data?.data || []
+console.log(featuredBikes)
   return (
     <div className="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
       {/* Hero Section */}
@@ -25,21 +47,12 @@ const HomePage = () => {
       <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">Featured Bikes</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {[1, 2, 3, 4].map((_, idx) => (
-            <div key={idx} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-              <img src={`/bike-${idx + 1}.jpg`} alt={`Bike ${idx + 1}`} className="w-full h-48 object-cover" />
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Bike Model {idx + 1}</h3>
-                <p className="text-gray-600 mb-4">Perfect for urban commuting and off-road adventures.</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-green-600 font-bold text-lg">$1,999</span>
-                  <button className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all duration-300">
-                    View Details
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
+      {
+        isFetching || isLoading ? generateArray(4).map((_,idx)=> <ProductCardSkeleton key={idx}/>) :    featuredBikes.map((bike:IProduct, idx:number) => (
+   
+          <ProductCard key={idx} model={bike?.name} imgSrc={bike.image as string} description={bike.description} price={bike?.price} onDetailsClick={()=>navigate(`/product/${bike?._id}`)}/>
+        ))
+      }
         </div>
       </div>
 
@@ -48,20 +61,21 @@ const HomePage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">Explore Categories</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {["Mountain Bikes", "Road Bikes", "Hybrid Bikes", "Electric Bikes"].map((category, idx) => (
-              <div key={idx} className="bg-gray-50 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                <img src={`/category-${idx + 1}.jpg`} alt={category} className="w-full h-48 object-cover" />
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">{category}</h3>
-                  <Link
-                    to="/shop"
-                    className="inline-flex items-center text-green-600 hover:text-green-700 transition-all duration-300"
-                  >
-                    Shop Now <ArrowRight className="ml-2" />
-                  </Link>
-                </div>
+         {
+          isLoading || isFetching ? generateArray(4).map((_,idx)=> <CategoryCardSkeleton key={idx}/>)  :       pdCategoryItems?.map((category, idx) => (
+            <div key={idx} className="bg-gray-50 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+              <img src={category?.img} alt={category?.label} className="w-full h-48 object-cover" />
+              <div className="p-6">
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">{category?.label}</h3>
+                <Link
+                  to={`/shop?category=${category.label}`}                    className="inline-flex items-center text-green-600 hover:text-green-700 transition-all duration-300"
+                >
+                  Shop Now <ArrowRight className="ml-2" />
+                </Link>
               </div>
-            ))}
+            </div>
+          ))
+         }
           </div>
         </div>
       </div>
