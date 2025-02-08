@@ -1,22 +1,20 @@
 export const productCategories = [
-  "Robotic",
-  "Manual",
-  "Reflectorless",
-  "Construction",
-  "Specialized",
-  "All",
-];
+  "Mountain Bikes",
+  "Road Bikes",
+  "Hybrid Bikes",
+  "Electric Bikes"
+]
 
-export const productBrands = [
-  "Leica Geosystems",
-  "Trimble",
-  "Topcon",
-  "Sokkia",
-  "Nikon",
-  "Pentax",
-  "South Surveying & Mapping Technology",
-  "Stonex",
-  "Ruide",
-  "Hi-Target",
-  "All",
-];
+
+export const productBrands =[
+  "Suzuki Zixer",
+  "Giant",
+  "Trek",
+  "Cannondale",
+  "Specialized",
+  "Scott",
+  "Yamaha",
+  "Bianchi",
+  "Merida",
+  "Kawasaki"
+]

@@ -1,10 +1,11 @@
 import { FieldValues, useForm } from "react-hook-form";
-import { Link } from "react-router";
 
 import { useGetProfileQuery, useUpdateProfileMutation } from "../redux/features/auth/authApi";
 import { useEffect } from "react";
 import ProfileSkeleton from "../components/skeleton/ProfileSkeleton";
 import { toast } from "sonner";
+import { User } from "lucide-react";
+
 
 
 
@@ -90,16 +91,10 @@ const {
 
   return (
     <div className="w-full max-w-2xl mx-auto p-6 bg-white rounded-xl shadow-md">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">User Profile</h2>
-        <Link
-          to="/logout"
-          className="text-red-600 hover:text-red-800 text-sm font-medium"
-        >
-          Logout
-        </Link>
-      </div>
 
+      <h1 className="text-2xl font-bold text-[#00283a] mb-4 flex items-center">
+        <User className="mr-2" /> Profile
+      </h1>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Personal Info */}

@@ -9,6 +9,7 @@ import {
 import { toast } from "sonner";
 import { IProduct } from "../../pages/Shop";
 import RecentItems from "./RecentItems";
+import { productBrands, productCategories } from "../../constants/product";
 
 interface IProductFormProps {
   productData?: IProduct;
@@ -19,25 +20,25 @@ const ProductForm = ({ productData, id }: IProductFormProps) => {
   const [recentFiveItem, setRecentFiveItems] = useState<
     { id: string; name: string; status: "new" | "updated" }[]
   >([]);
-  const [categories] = useState([
-    "Robotic",
-    "Manual",
-    "Reflectorless",
-    "Construction",
-    "Specialized",
-  ]);
-  const [brands] = useState([
-    "Leica Geosystems",
-    "Trimble",
-    "Topcon",
-    "Sokkia",
-    "Nikon",
-    "Pentax",
-    "South Surveying & Mapping Technology",
-    "Stonex",
-    "Ruide",
-    "Hi-Target",
-  ]);
+  // const [categories] = useState([
+  //   "Robotic",
+  //   "Manual",
+  //   "Reflectorless",
+  //   "Construction",
+  //   "Specialized",
+  // ]);
+  // const [brands] = useState([
+  //   "Leica Geosystems",
+  //   "Trimble",
+  //   "Topcon",
+  //   "Sokkia",
+  //   "Nikon",
+  //   "Pentax",
+  //   "South Surveying & Mapping Technology",
+  //   "Stonex",
+  //   "Ruide",
+  //   "Hi-Target",
+  // ]);
   const [insertProduct] = useInsertProductMutation();
   const [updateProduct] = useUpdateProductMutation();
 
@@ -250,7 +251,7 @@ const ProductForm = ({ productData, id }: IProductFormProps) => {
           <div>
             <h3 className="text-gray-700 font-semibold">Product Categories</h3>
             <div className="space-y-2 mt-2">
-              {categories.map((category) => (
+              {productCategories?.map((category) => (
                 <label
                   key={category}
                   className="flex items-center cursor-pointer"
@@ -277,7 +278,7 @@ const ProductForm = ({ productData, id }: IProductFormProps) => {
           <div>
             <h3 className="text-gray-700 font-semibold">Brands</h3>
             <div className="space-y-2 mt-2">
-              {brands.map((brand) => (
+              {productBrands?.map((brand) => (
                 <label key={brand} className="flex items-center cursor-pointer">
                   <input
                     type="radio"
