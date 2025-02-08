@@ -34,7 +34,7 @@ const Products = () => {
     setDebouncedSearchTerm("");
     setCurrentPage(1);
   };
-  const { isLoading, data, isFetching } = useGetProductsQuery(
+  const { isLoading, data, isFetching,refetch } = useGetProductsQuery(
     {
       page: currentPage,
       limit: 10,
@@ -81,6 +81,7 @@ const Products = () => {
       if (res.data) {
         toast.success("Product deleted successfully", { id: toastId });
         // Refetch products with the updated status
+        refetch();
        
         setCurrentPage(currentPage); // Refresh the current page when product is deleted
       } else {
