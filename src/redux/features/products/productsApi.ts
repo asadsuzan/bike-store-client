@@ -1,4 +1,4 @@
-import { IProduct } from "../../../pages/Shop";
+import { IProduct } from "../../../types";
 import { baseApi } from "../../api/baseApi";
 
 const productsApi = baseApi.injectEndpoints({

@@ -2,7 +2,8 @@ import { ShoppingBag } from "lucide-react";
 import ProductForm from "../components/Shared/ProductForm";
 import { useParams } from "react-router";
 import { useGetProductByIdQuery } from "../redux/features/products/productsApi";
-import { IProduct } from "./Shop";
+import { IProduct } from "../types";
+
 
 const EditProduct = () => {
   const { id } = useParams();

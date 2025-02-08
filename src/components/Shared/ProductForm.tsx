@@ -7,9 +7,10 @@ import {
   useUpdateProductMutation,
 } from "../../redux/features/products/productsApi";
 import { toast } from "sonner";
-import { IProduct } from "../../pages/Shop";
+
 import RecentItems from "./RecentItems";
 import { productBrands, productCategories } from "../../constants/product";
+import { IProduct } from "../../types";
 
 interface IProductFormProps {
   productData?: IProduct;

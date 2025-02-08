@@ -5,34 +5,43 @@ import { useCurrentUser } from "../../redux/features/auth/authSlice";
 import { Link } from "react-router";
 import userRoutes from "../layout/UserRoutes";
 import adminRoutes from "../layout/AdminRoutes";
-import { TRoute } from "../../types/routes";
+// import { TRoute } from "../../types/routes";
 
-type TNavItems = TRoute[];
+// type TNavItems = TRoute[];
 
 const DashboardNavigation = () => {
-  let navItems: TNavItems = [];
-  const location = useLocation(); // Hook to get current location
+  const location = useLocation();
   const user = useAppSelector(useCurrentUser);
+  const navItems = user?.role === "customer" ? userRoutes : adminRoutes;
 
-  if (user && user.role === "customer") {
-    navItems = userRoutes;
-  } else {
-    navItems = adminRoutes;
-  }
+  // Check if current path starts with navigation item's href
+  const isActive = (href: string) => location.pathname.startsWith(href);
+
   return (
-    <nav className="flex items-center mb-2">
-      <ul className="flex gap-4">
+    <nav className="mb-4 lg:mb-6">
+      <ul className="flex gap-1 overflow-x-auto pb-2 md:gap-2 lg:gap-4">
         {navItems.map((item) => (
-          <li key={item.title}>
+          <li key={item.title} className="flex-shrink-0">
             <Link
               to={item.href}
               className={clsx(
-                "flex items-center gap-2 px-2 py-2 rounded-md hover:bg-gray-100",
-                location.pathname === item.href && "bg-[#b5e7b5] " // Active tab styling
+                "flex items-center gap-2 px-3 py-2 rounded-lg",
+                "transition-colors duration-200 hover:bg-gray-100",
+                "text-gray-600 hover:text-gray-900",
+                isActive(item.href) && "bg-green-100 text-green-700 font-medium",
+                "group" // For group-hover effects
               )}
+              aria-current={isActive(item.href) ? "page" : undefined}
             >
-              <span className="text-green-500"> {item.icon}</span>
-              <span className="text-sm">{item.title}</span>
+              <span className={clsx(
+                "text-lg transition-colors duration-200",
+                isActive(item.href) ? "text-green-600" : "text-gray-500 group-hover:text-green-500"
+              )}>
+                {item.icon}
+              </span>
+              <span className="text-sm hidden sm:inline-block">
+                {item.title}
+              </span>
             </Link>
           </li>
         ))}

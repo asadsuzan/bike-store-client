@@ -4,12 +4,13 @@ import Footer from "../components/Shared/Footer";
 import Testimonial from "../components/Shared/Testimonial";
 import ProductCard from "../components/ProductCard";
 import { useGetProductsQuery } from "../redux/features/products/productsApi";
-import { IProduct } from "./Shop";
+
 import { pdCategoryItems } from "../constants/product";
 import ProductCardSkeleton from "../components/ProductCardSkeleton";
 
 import CategoryCardSkeleton from './../components/skeleton/CategoryCardSkeleton';
 import { generateArray } from "../utils";
+import { IProduct } from "../types";
 
 const HomePage = () => {
   const navigate = useNavigate()
@@ -25,7 +26,7 @@ const HomePage = () => {
     }
   );
 const featuredBikes = data?.data || []
-console.log(featuredBikes)
+
   return (
     <div className="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
       {/* Hero Section */}

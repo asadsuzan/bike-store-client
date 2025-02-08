@@ -2,12 +2,13 @@ import { ShoppingCart, Minus, Plus, MapPin } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useGetProductByIdQuery } from "../redux/features/products/productsApi";
-import { IProduct } from "./Shop";
+
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { addToCart, ICartItem } from "../redux/features/cart/cartSlice";
 import { toast } from "sonner";
 import ProductDetailsSkeleton from "../components/layout/ProductDetailsSkeleton";
 import Footer from "../components/Shared/Footer";
+import { IProduct } from "../types";
 
 const ProductDetails = () => {
   const [isDescriptionOpen, setDescriptionOpen] = useState(false);

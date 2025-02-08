@@ -98,7 +98,7 @@ const CartPage = () => {
       toast.error(err.message, { id });
     }
   };
-console.log(cart)
+
   return (
     <>
       {isLoading || isPreparingCheckout ? (

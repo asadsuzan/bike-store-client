@@ -31,6 +31,7 @@ import AnalyticsSummaryCardSkeleton from "../components/skeleton/AnalyticsSummar
 import { generateArray } from "../utils";
 import SalesOverviewSkeleton from "../components/skeleton/SalesOverviewSkeleton";
 import OrderStatisticsSkeleton from "../components/skeleton/OrderStatisticsSkeleton";
+import NoDataFound from "../components/Shared/NoDataFound";
 
 const COLORS = ["#FFBF00", "#4CAF50", "#2196F3", "#8BC34A", "#F44336"];
 
@@ -123,7 +124,7 @@ const Dashboard = () => {
             )}
             <AnalyticsSummaryCard
               icon={DollarSign}
-              value={data?.data?.revenue || 0}
+              value={(data?.data?.revenue ?? 0).toFixed(2)}
               label={`Total ${role === "admin" ? "Revenue" : "Expanse"}`}
               iconColor="#8BC34A"
             />
@@ -184,11 +185,12 @@ const Dashboard = () => {
 
       {/* recent orders */}
       <div className="lg:col-span-3 mt-6 bg-white rounded-lg shadow-sm p-4">
-        {isRecentOrdersLoading ? (
+      <h2 className="text-lg font-semibold mb-4">Recent Orders</h2>
+        {isLoading ? (
           <Skeleton count={5} height={40} />
-        ) : (
+        ) : recentOrders?.length === 0 ? <NoDataFound/>:(
           <div>
-            <h2 className="text-lg font-semibold mb-4">Recent Orders</h2>
+           
             <OrderTable orderDta={recentOrders} role={role} />
           </div>
         )}

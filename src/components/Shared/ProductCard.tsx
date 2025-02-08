@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router";
-import { IProduct } from "../../pages/Shop";
+
 import clsx from "clsx";
+import { IProduct } from "../../types";
 
 interface ProductCardProps {
   product: IProduct;
