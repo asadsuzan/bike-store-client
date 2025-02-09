@@ -102,6 +102,21 @@ A fully functional e-commerce web application for purchasing and managing bike p
 🛡️ **Security**
 - JWT for user authentication
 - Role-based access for Admin functionalities
+---
+## 🔗Deployment 
+[Live Link](https://bikebd-client.vercel.app/)
+## 🔗 Backend Repository
 
-🤝 **Contributions**  are welcome! Feel free to open issues or submit pull requests for improvements.
+[View on GitHub](https://github.com/asadsuzan/bike-store-api)
+
+---
+## 🤝 Contributions
+
+Contributions are welcome! Feel free to open issues or submit pull requests for improvements.
+
+## 🧑 Author
+
+Developed by **MD Asaduzzaman Suzan**
+
+
 
