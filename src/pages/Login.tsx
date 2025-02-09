@@ -9,9 +9,7 @@ import AuthForm from "../components/form/AuthForm";
 import { ArrowRight } from "lucide-react";
 
 const Login = () => {
-  // const { register, handleSubmit } = useForm({
-  //   defaultValues: { email: "admin@gmail.com", password: "adminadmin" },
-  // });
+
   const [login] = useLoginMutation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -30,17 +28,16 @@ const Login = () => {
       toast.success("Logged in success", {
         id: toastId,
       });
-      // navigate(`/`);
-      // Navigate back to the protected page or home
+
       navigate(from, { replace: true });
     } catch (error) {
       const message =
-        (error as { data: { message: string } }).data.message ||
+        (error as { data: { message: string } })?.data?.message ||
         "Something went wrong";
       toast.error(message, {
         id: toastId,
       });
-      console.error(error);
+
     }
   };
   return (

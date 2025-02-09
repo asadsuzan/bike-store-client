@@ -19,13 +19,7 @@ const Registration = () => {
     try {
       const res = await register(data).unwrap()
    if(res?.success){
-    //  setInterval(() => {
-    //   toast.success("Registered success", {
-    //     id: toastId,
-    //   });
 
-    //   navigate('/login')
-    //  }, 2000);
 setTimeout(() => {
   toast.success("Registered success", {
     id: toastId,
@@ -42,7 +36,7 @@ setTimeout(() => {
     
     } catch (error) {
       const message =
-        (error as { data: { message: string } }).data.message ||
+        (error as { data: { message: string } })?.data?.message ||
         "Something went wrong";
       toast.error(message, {
         id: toastId,
