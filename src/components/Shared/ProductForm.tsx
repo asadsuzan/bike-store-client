@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { CheckCircle } from "lucide-react";
 import { useForm, Controller, FieldValues } from "react-hook-form";
 import { RichTextEditor } from "@mantine/rte";

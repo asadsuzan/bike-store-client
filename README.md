@@ -1,50 +1,107 @@
-# React + TypeScript + Vite
+# Bike Store Client 🚴‍♂️
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A fully functional e-commerce web application for purchasing and managing bike products, built using modern web technologies.
 
-Currently, two official plugins are available:
+## 🌐 Live Demo
+[Visit the Live Site](https://bikebd-client.vercel.app/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+🔗 **Backend Repository**  
+[View Backend Repository](https://github.com/asadsuzan/bike-store-api)
+---
 
-## Expanding the ESLint configuration
+## 🚀 Features
+- **Public Pages**
+    - Home
+    - Shop
+    - Product Details
+    - Cart
+    - About
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **Authentication & Authorization**
+    - Login and Registration
+    - Secure Routes for Admin and User dashboards
 
-- Configure the top-level `parserOptions` property like this:
+- **User Dashboard**
+    - Order History
+    - Profile Management
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+- **Admin Dashboard**
+    - Insert Products
+    - Manage Inventory
+    - Manage Orders
+    - Edit Product Information
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+- **Additional Functionalities**
+    - Smooth Page Scroll
+    - Persistent Store with Redux Persist
+    - Notifications using Sonner
+    - Responsive Layout
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+---
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## 📁 Project Structure
+
+---
+
+## ⚙️ Available Routes
+| Route               | Description                  | Access      |
+| ------------------- | ----------------------------- | ----------- |
+| `/`                 | Home Page                     | Public      |
+| `/shop`             | Shop Page                     | Public      |
+| `/cart`             | Cart Page                     | Public      |
+| `/about`            | About Page                    | Public      |
+| `/product/:id`      | Product Details               | Public      |
+| `/login`            | Login                         | Public      |
+| `/register`         | Register                      | Public      |
+| `/dashboard`        |  Dashboard                | Protected   |
+| `/orders`           | Order Management              | Protected   |
+| `/insert-product`   | Add New Product               | Admin Only  |
+| `/edit-product/:id` | Edit Product Details          | Admin Only  |
+| `/inventory`        | Product Inventory Management  | Admin Only  |
+| `/profile`          | User Profile                  | Protected   |
+| `/order/verify-order`| Verify Order                 | Authenticated|
+
+---
+
+## 📦 Tech Stack
+- **Frontend:** React, TypeScript, Vite, Tailwind CSS
+- **State Management:** Redux Toolkit, Redux Persist
+- **Routing:** React Router
+- **UI Components:** Framer Motion, Lucide Icons, Mantine RTE
+- **Charts:** Recharts
+- **Form Handling:** React Hook Form
+- **Notifications:** Sonner
+
+---
+
+## 🚀 Installation & Setup
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-repo-url
+   cd bike-store-client
+2. Install dependencies:
+   ```bash
+   npm install
+3. Run the development server:
+   ```bash
+   npm run dev
+
+4. Build the project for production:
+   ```bash
+   npm run build
+5. Preview the production build:
+   ```bash
+   npm run preview
+
+🛠️ **Scripts**
+- `npm run dev`: Starts the development server
+- `npm run build`: Builds the project for production
+- `npm run lint`: Lints the codebase
+- `npm run preview`: Previews the production build
+
+🛡️ **Security**
+- JWT for user authentication
+- Role-based access for Admin functionalities
+
+🤝 **Contributions**  are welcome! Feel free to open issues or submit pull requests for improvements.
+
