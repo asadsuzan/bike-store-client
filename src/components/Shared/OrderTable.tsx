@@ -102,30 +102,30 @@ const OrderTable: React.FC<OrderTableProps> = ({ orderDta, role }) => {
         
         <tbody className="divide-y">
           {orderDta?.map((order) => (
-            <tr key={order._id} className="hover:bg-gray-50 transition-colors">
+            <tr key={order?._id} className="hover:bg-gray-50 transition-colors">
               {/* Order ID */}
               <td className="p-4 text-blue-600 font-medium">
                 <Link
-                  to={`/order/verify-order?order_id=${order.transaction.id}`}
+                  to={`/order/verify-order?order_id=${order?.transaction?.id}`}
                   className="hover:underline"
                 >
-                  #{order.transaction.id.slice(0, 8)}
+                  #{order?.transaction?.id.slice(0, 8)}
                 </Link>
               </td>
 
               {/* Products */}
               <td className="p-4 space-y-2">
-                {order.items.map((item) => (
-                  <div key={item.productId._id} className="flex items-center gap-2">
+                {order?.items?.map((item) => (
+                  <div key={item?.productId?._id} className="flex items-center gap-2">
                     <Link
-                      to={`/product/${item.productId._id}`}
+                      to={`/product/${item?.productId?._id}`}
                       className="text-blue-500 hover:underline line-clamp-1"
                     >
-                      {item.productId.name}
+                      {item?.productId?.name}
                     </Link>
                     <span className="text-gray-500">×</span>
                     <span className="text-green-600 font-medium">
-                      {item.quantity}
+                      {item?.quantity}
                     </span>
                   </div>
                 ))}
@@ -133,17 +133,17 @@ const OrderTable: React.FC<OrderTableProps> = ({ orderDta, role }) => {
 
               {/* Quantity */}
               <td className="p-4 hidden sm:table-cell">
-                {order.items.length}
+                {order?.items?.length}
               </td>
 
               {/* Total */}
               <td className="p-4 font-medium">
-                ${order.totalPrice.toFixed(2)}
+                ${order?.totalPrice?.toFixed(2)}
               </td>
 
               {/* Time */}
               <td className="p-4 hidden md:table-cell">
-                {new Date(order.transaction.date_time).toLocaleDateString('en-US', {
+                {new Date(order?.transaction?.date_time).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'short',
                   day: 'numeric',
@@ -153,8 +153,8 @@ const OrderTable: React.FC<OrderTableProps> = ({ orderDta, role }) => {
               {/* Customer (Admin only) */}
               {role === 'admin' && (
                 <td className="p-4 hidden lg:table-cell">
-                  <span className="line-clamp-1" title={order.user.name}>
-                    {order.user.name}
+                  <span className="line-clamp-1" title={order?.user?.name}>
+                    {order?.user?.name}
                   </span>
                 </td>
               )}
@@ -162,11 +162,11 @@ const OrderTable: React.FC<OrderTableProps> = ({ orderDta, role }) => {
               {/* Status */}
               <td className="p-4">
                 {role === "customer" ? (
-                  <StatusBadge status={order.status} />
+                  <StatusBadge status={order?.status} />
                 ) : (
                   <select
-                    value={order.status}
-                    onChange={(e) => handleStatusChange(order._id, e.target.value)}
+                    value={order?.status}
+                    onChange={(e) => handleStatusChange(order?._id, e.target.value)}
                     className={`px-3 py-1 rounded-full text-sm font-medium text-white ${getStatusColorClass(order.status)} cursor-pointer appearance-none focus:ring-2 focus:ring-opacity-50`}
                     disabled={isUpdating}
                   >
@@ -188,14 +188,14 @@ const OrderTable: React.FC<OrderTableProps> = ({ orderDta, role }) => {
                 <button
                   onClick={() => {
                     if (window.confirm("Are you sure you want to delete this order?")) {
-                      handleDelete(order._id);
+                      handleDelete(order?._id);
                     }
                   }}
-                  disabled={isDeleting && deletingId === order._id}
+                  disabled={isDeleting && deletingId === order?._id}
                   className="p-2 hover:bg-red-100 rounded-full transition-colors text-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
                   aria-label="Delete order"
                 >
-                  {isDeleting && deletingId === order._id ? (
+                  {isDeleting && deletingId === order?._id ? (
                    <>loading</>
                   ) : (
                     <Trash size={18} />
