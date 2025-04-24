@@ -69,12 +69,12 @@ const CartPage = () => {
     let id;
     try {
       if (!user?.userId) {
-        toast.error("Please log in to checkout", { id });
+        toast.error("You must be logged in to proceed to checkout", { id });
         navigate("/login", { state: { from: location }, replace: true });
         return;
       }
       if (user.role === "admin") {
-        toast.error("Admin checkout unauthorized.", { id });
+        toast.error("Admins are not allowed to place orders.", { id });
         return;
       }
       const res = await createOrder({ items });
@@ -84,18 +84,21 @@ const CartPage = () => {
         setIsPreparingCheckout(true);
 
         setTimeout(() => {
-          id = toast.success("Order placed successfully");
+          id = toast.success("Order placed successfully! Redirecting to checkout...");
           setIsPreparingCheckout(false);
           window.location.href = (res?.data as any)?.data?.checkout_url;
         }, 1000);
       } else if (res.error && (res.error as any).data) {
         if ((res.error as any).data?.item) {
           setIsCartItemIssue((res.error as any)?.data?.item);
-          toast.error("Something went wrong", { id });
+          toast.error("Some items in your cart have issues. Please review them.", { id });
+        }else {
+          toast.error("Failed to place the order. Please try again.");
         }
       }
     } catch (err: any) {
       toast.error(err.message, { id });
+      toast.error(`Unexpected error: ${err.message || "Please try again later"}`, { id: id });
     }
   };
 

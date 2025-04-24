@@ -69,7 +69,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/register" element={<Registration />} />
           </Routes>
         </BrowserRouter>
-        <Toaster />
+        <Toaster position="top-center" richColors/>
       </PersistGate>
     </Provider>
   </StrictMode>

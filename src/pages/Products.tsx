@@ -1,12 +1,12 @@
 import clsx from "clsx";
 import { useDeleteProductMutation, useGetProductsQuery } from "../redux/features/products/productsApi";
-import { CircleX, Edit, Eye, Trash2, Box } from "lucide-react";
+import { CircleX, Edit, Eye, Trash2, Box, PlusCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { toast } from "sonner";
 import NoDataFound from "../components/Shared/NoDataFound";
 import { productCategories } from "../constants/product";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import Pagination from "../components/Shared/Pagination";
 import { IProduct } from "../types";
 
@@ -121,12 +121,37 @@ const Products = () => {
 
   return (
     <div className="p-4 lg:p-8 bg-gray-50 min-h-screen">
+    
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-2xl lg:text-3xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+       <div className="flex justify-between items-center mb-4 lg:mb-6">
+       <h1 className="text-2xl lg:text-3xl font-bold text-gray-800 mb-6 flex items-center gap-2">
           <Box className="w-6 h-6 text-green-600" />
           Product Inventory
         </h1>
-
+      
+            <Link
+              to={`/insert-product`}
+              className={clsx(
+                "flex items-center gap-2 px-3 py-2 rounded-lg",
+                "transition-colors duration-200 hover:bg-gray-100",
+                "text-gray-600 hover:text-gray-900",
+                "bg-green-100 text-green-700 font-medium",
+                "group" // For group-hover effects
+              )}
+             
+            >
+              <span className={clsx(
+                "text-lg transition-colors duration-200",
+             "text-gray-500 group-hover:text-green-500"
+              )}>
+                <PlusCircle size={20} />
+              </span>
+              <span className="text-sm hidden sm:inline-block">
+                Add New Product
+              </span>
+            </Link>
+       </div>
+         
         {/* Filters Section */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-8">
           <div className="relative col-span-1 lg:col-span-2">
